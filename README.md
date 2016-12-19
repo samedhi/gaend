@@ -4,12 +4,23 @@
 This project converts a `google.appengine.ext.ndb.Model` into a HTTP endpoints. It provides validation, routing, documentation, and CRUD server endpoints. Its purpose is to act as a "DSL" for Google App Engine, allowing you to quickly write CRUD servers with just a `Model`.
 
 ## Code Example
-```python
+```yaml
 # app.yaml
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /
+  script: main.app
 ```
+
 ```python
 # main.py
+from flask import Flask
 from google.appengine.ext import ndb
+
+app = Flask(__name__)
 
 class Alien(ndb.Model):
     proboscis_count = ndb.IntegerProperty(default=1)
@@ -19,12 +30,14 @@ class Alien(ndb.Model):
 
 modeling-agency.create_endpoint(Alien)
 ```
+
 ```bash
 > gcloud deploy app.yaml
 ...
 Deployed service [modeling-agency] to [https://modeling-agency.appspot.com]
 ...
 ```
+
 ```bash
 > curl -H "Content-Type: application/json" \
   -d '{"kind": "Martian", "name": "Bob"}' \
