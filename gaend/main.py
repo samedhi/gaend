@@ -3,5 +3,7 @@ from flask import request
 from flask import Flask
 from google.appengine.ext import ndb
 
+import generator
+
 app = Flask(__name__)
-app.config['DEBUG'] = True  # Jim says put on safety
+app.config['DEBUG'] = True
