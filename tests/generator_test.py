@@ -12,26 +12,27 @@ import webtest
 
 SERIALIZE_DICT = {'key1': True, 'key2': []}
 SERIALIZE_LIST = [1, 2.0, {}, 'json']
+SERIALIZE = [SERIALIZE_DICT, SERIALIZE_LIST]
 
 COMPUTED = lambda x: "COMPUTED_PROPERTY"
 
 PROPERTIES = {
-    ndb.IntegerProperty: [int],
-    ndb.FloatProperty: [float],
-    ndb.BooleanProperty: [bool],
-    ndb.StringProperty: [(basestring, lambda x:  len(s) < 1500)],
-    ndb.TextProperty: [basestring],
-    ndb.BlobProperty: [basestring],
-    ndb.DateProperty: [date],
-    ndb.TimeProperty: [time],
-    ndb.DateTimeProperty: [datetime],
-    ndb.GeoPtProperty: [ndb.GeoPt],
-    ndb.KeyProperty: [ndb.Model],
-    ndb.StructuredProperty: [ndb.Model],
-    ndb.LocalStructuredProperty: [ndb.Model],
-    ndb.JsonProperty: [SERIALIZE_DICT, SERIALIZE_LIST],
-    ndb.PickleProperty: [SERIALIZE_DICT, SERIALIZE_LIST],
-    ndb.ComputedProperty: [COMPUTED],
+    ndb.IntegerProperty: int,
+    ndb.FloatProperty: float,
+    ndb.BooleanProperty: bool,
+    ndb.StringProperty: basestring,
+    ndb.TextProperty: basestring,
+    ndb.BlobProperty: basestring,
+    ndb.DateProperty: date,
+    ndb.TimeProperty: time,
+    ndb.DateTimeProperty: datetime,
+    ndb.GeoPtProperty: ndb.GeoPt,
+    ndb.KeyProperty: ndb.Model,
+    ndb.StructuredProperty: ndb.Model,
+    ndb.LocalStructuredProperty: ndb.Model,
+    # ndb.JsonProperty: SERIALIZE,
+    # ndb.PickleProperty: SERIALIZE,
+    # ndb.ComputedProperty: COMPUTED,
 }
 
 # Untested Property Types:
@@ -47,6 +48,9 @@ DEFAULTS = {
     int: 0,
     float: 0.0,
     basestring: "",
+    datetime: datetime.now(),
+    date: datetime.now().date(),
+    time: datetime.now().time(),
     ndb.GeoPt: ndb.GeoPt(0,0),
     ndb.Model: DefaultModel,
 }
@@ -55,31 +59,40 @@ CHOICES = {
     bool: [True, False],
     int: [-1, 0, 1],
     float: [-1.0, 0.0, 1.0],
-    basestring: "",
-    ndb.GeoPt: ndb.GeoPt(0,0),
-    ndb.Model: DefaultModel,
+    basestring: ["", "a", "z"],
+    datetime: [datetime.now()],
+    date: [datetime.now().date()],
+    time: [datetime.now().time()],
+    ndb.GeoPt: [ndb.GeoPt(-1,-1), ndb.GeoPt(-1,-1), ndb.GeoPt(1,1)],
+    ndb.Model: [DefaultModel],
 }
 
 OPTIONS = {
-    'indexed': bool,
     'repeated': bool,
     'required': bool,
     'default': DEFAULTS,
     'choices': CHOICES,
 }
 
-ALL_OPTIONS = set([])
-for property in PROPERTIES:
-    # Build the combination of OPTIONS that may be passed to each Property.
-    for i in range(len(OPTIONS)):
-        for options in itertools.combinations(OPTIONS.keys(), i):
-            # repeated cannot be combined with required=True or default=True
-            if 'repeated' in options:
-                options = itertools.ifilterfalse(
-                    lambda x: x is 'required' or x is 'default',
-                    options)
-                options = tuple(options)
-            ALL_OPTIONS.add(options)
+OPTIONS_KEYS = set([])
+# In this pass we are going to build all the combinations of options that
+# can be passed to a ndb Property.
+for i in range(len(OPTIONS)):
+    for options in itertools.combinations(OPTIONS.keys(), i):
+        # repeated cannot be combined with required=True or default=True
+        if 'repeated' in options:
+            options = itertools.ifilterfalse(
+                lambda x: x is 'required' or x is 'default',
+                options)
+            options = tuple(options)
+        OPTIONS_KEYS.add(options)
+
+for prop,value in PROPERTIES.items():
+    print prop, value
+    choices = CHOICES[value]
+    defaults = DEFAULTS[value]
+
+    print choices, defaults
 
 
 class GeneratorTest(unittest.TestCase):
