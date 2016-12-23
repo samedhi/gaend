@@ -34,41 +34,51 @@ PROPERTIES = {
 # ndb.UserProperty - Google recomends not using this
 # ndb.GenericProperty - Why not just use ndb.Expando class?
 
+COMPUTE_FX = lambda x: "COMPUTED_PROPERTY"
+
 class DefaultModel(ndb.Model):
     pass
 
-COMPUTE = lambda x: "COMPUTED_PROPERTY"
+# Probably wondering why fx instead of just hard coded values? Keys are
+# really built with the application_id as part of the key. Because the
+# application_id when a test first starts up is different than the
+# application_id afterwards, the key will be different in the "compile"
+# (first pass) execution of this code than the "runtime" execution of
+# this code. Therefore you need to dynamically build the key at
+# runtime with a function.
+def key_1():
+    return ndb.Key('DefaultModel', "DEFAULT_MODEL_NAME_1")
+def key_2():
+    return ndb.Key('DefaultModel', "DEFAULT_MODEL_NAME_2")
+
+DATETIME_NOW = datetime.now()
+DATE_NOW = datetime.now().date()
+TIME_NOW = datetime.now().time()
 
 DEFAULTS = {
     bool: False,
     int: 0,
     float: 0.0,
     basestring: "",
-    datetime: datetime.now(),
-    date: datetime.now().date(),
-    time: datetime.now().time(),
+    datetime: DATETIME_NOW,
+    date: DATE_NOW,
+    time: TIME_NOW,
     ndb.GeoPt: ndb.GeoPt(0,0),
-    'ndb.Key': DefaultModel,
+    'ndb.Key': key_1,
     'serialized': {},
-    'computed': 0,
 }
-
-SERIALIZE_DICT = {'key1': True, 'key2': []}
-SERIALIZE_LIST = [1, 2.0, {}, 'json']
-SERIALIZE = [SERIALIZE_DICT, SERIALIZE_LIST]
 
 CHOICES = {
     bool: [True, False],
     int: [-1, 0, 1],
     float: [-1.0, 0.0, 1.0],
     basestring: ["", "a", "z"],
-    datetime: [datetime.now()],
-    date: [datetime.now().date()],
-    time: [datetime.now().time()],
-    ndb.GeoPt: [ndb.GeoPt(-1,-1), ndb.GeoPt(-1,-1), ndb.GeoPt(1,1)],
-    'ndb.Key': [DefaultModel],
-    'serialized': SERIALIZE,
-    'computed': [-1, 0, 1],
+    datetime: [DATETIME_NOW],
+    date: [DATE_NOW],
+    time: [TIME_NOW],
+    ndb.GeoPt: [ndb.GeoPt(-1, -1), ndb.GeoPt(0, 0), ndb.GeoPt(1, 1)],
+    'ndb.Key': [key_1, key_2],
+    'serialized': [{'key1': True, 'key2': []}, {}, [1, 2.0, {}, 'val1']],
 }
 
 OPTIONS = {
