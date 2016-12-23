@@ -1,6 +1,7 @@
 from datetime import date, time, datetime
 from google.appengine.ext import testbed, ndb
 from gaend.main import app
+import itertools
 import unittest
 import webtest
 
@@ -9,7 +10,8 @@ import webtest
 # cloud.google.com/appengine/docs/python/ndb/entity-property-reference
 # cloud.google.com/appengine/docs/python/ndb/creating-entity-models#expando
 
-SERIALIZE = [{'key1': True, 'key2': []}, [1, 2.0, {}, 'json']]
+SERIALIZE_DICT = {'key1': True, 'key2': []}
+SERIALIZE_LIST = [1, 2.0, {}, 'json']
 
 COMPUTED = lambda x: "COMPUTED_PROPERTY"
 
@@ -27,9 +29,9 @@ PROPERTIES = {
     ndb.KeyProperty: [ndb.Model],
     ndb.StructuredProperty: [ndb.Model],
     ndb.LocalStructuredProperty: [ndb.Model],
-    ndb.JsonProperty: SERIALIZE,
-    ndb.PickleProperty: SERIALIZE,
-    ndb.ComputedProperty: COMPUTED,
+    ndb.JsonProperty: [SERIALIZE_DICT, SERIALIZE_LIST],
+    ndb.PickleProperty: [SERIALIZE_DICT, SERIALIZE_LIST],
+    ndb.ComputedProperty: [COMPUTED],
 }
 
 # Untested Property Types:
@@ -58,13 +60,27 @@ CHOICES = {
     ndb.Model: DefaultModel,
 }
 
-PROPERTY_OPTIONS = {
+OPTIONS = {
     'indexed': bool,
     'repeated': bool,
     'required': bool,
     'default': DEFAULTS,
     'choices': CHOICES,
 }
+
+ALL_OPTIONS = set([])
+for property in PROPERTIES:
+    # Build the combination of OPTIONS that may be passed to each Property.
+    for i in range(len(OPTIONS)):
+        for options in itertools.combinations(OPTIONS.keys(), i):
+            # repeated cannot be combined with required=True or default=True
+            if 'repeated' in options:
+                options = itertools.ifilterfalse(
+                    lambda x: x is 'required' or x is 'default',
+                    options)
+                options = tuple(options)
+            ALL_OPTIONS.add(options)
+
 
 class GeneratorTest(unittest.TestCase):
 
