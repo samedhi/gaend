@@ -10,12 +10,6 @@ import webtest
 # cloud.google.com/appengine/docs/python/ndb/entity-property-reference
 # cloud.google.com/appengine/docs/python/ndb/creating-entity-models#expando
 
-SERIALIZE_DICT = {'key1': True, 'key2': []}
-SERIALIZE_LIST = [1, 2.0, {}, 'json']
-SERIALIZE = [SERIALIZE_DICT, SERIALIZE_LIST]
-
-COMPUTED = lambda x: "COMPUTED_PROPERTY"
-
 PROPERTIES = {
     ndb.IntegerProperty: int,
     ndb.FloatProperty: float,
@@ -27,12 +21,12 @@ PROPERTIES = {
     ndb.TimeProperty: time,
     ndb.DateTimeProperty: datetime,
     ndb.GeoPtProperty: ndb.GeoPt,
-    ndb.KeyProperty: ndb.Model,
-    ndb.StructuredProperty: ndb.Model,
-    ndb.LocalStructuredProperty: ndb.Model,
-    # ndb.JsonProperty: SERIALIZE,
-    # ndb.PickleProperty: SERIALIZE,
-    # ndb.ComputedProperty: COMPUTED,
+    ndb.KeyProperty: 'ndb.Key',
+    ndb.StructuredProperty: 'ndb.Key',
+    ndb.LocalStructuredProperty: 'ndb.Key',
+    ndb.JsonProperty: 'serialized',
+    ndb.PickleProperty: 'serialized',
+    ndb.ComputedProperty: 'computed',
 }
 
 # Untested Property Types:
@@ -43,6 +37,8 @@ PROPERTIES = {
 class DefaultModel(ndb.Model):
     pass
 
+COMPUTE = lambda x: "COMPUTED_PROPERTY"
+
 DEFAULTS = {
     bool: False,
     int: 0,
@@ -52,8 +48,14 @@ DEFAULTS = {
     date: datetime.now().date(),
     time: datetime.now().time(),
     ndb.GeoPt: ndb.GeoPt(0,0),
-    ndb.Model: DefaultModel,
+    'ndb.Key': DefaultModel,
+    'serialized': {},
+    'computed': 0,
 }
+
+SERIALIZE_DICT = {'key1': True, 'key2': []}
+SERIALIZE_LIST = [1, 2.0, {}, 'json']
+SERIALIZE = [SERIALIZE_DICT, SERIALIZE_LIST]
 
 CHOICES = {
     bool: [True, False],
@@ -64,7 +66,9 @@ CHOICES = {
     date: [datetime.now().date()],
     time: [datetime.now().time()],
     ndb.GeoPt: [ndb.GeoPt(-1,-1), ndb.GeoPt(-1,-1), ndb.GeoPt(1,1)],
-    ndb.Model: [DefaultModel],
+    'ndb.Key': [DefaultModel],
+    'serialized': SERIALIZE,
+    'computed': [-1, 0, 1],
 }
 
 OPTIONS = {
@@ -88,11 +92,12 @@ for i in range(len(OPTIONS)):
         OPTIONS_KEYS.add(options)
 
 for prop,value in PROPERTIES.items():
-    print prop, value
-    choices = CHOICES[value]
-    defaults = DEFAULTS[value]
-
-    print choices, defaults
+    # I am using `.get(k)` instead of `[k]` for `choices` and `default` as
+    # some options don't have meaningful values. What is the `defaults` for
+    # a `ndb.ComputedProperty` or `ndb.KeyProperty`?
+    choices = CHOICES.get(value)
+    defaults = DEFAULTS.get(value)
+    print value, choices, defaults
 
 
 class GeneratorTest(unittest.TestCase):
