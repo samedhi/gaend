@@ -34,7 +34,10 @@ PROPERTIES = {
 # ndb.UserProperty - Google recomends not using this
 # ndb.GenericProperty - Why not just use ndb.Expando class?
 
-COMPUTE_FX = lambda x: "COMPUTED_PROPERTY"
+COMPUTE_FX = lambda self: "COMPUTED_PROPERTY"
+
+class PetModel(ndb.Model):
+    name = ndb.StringProperty(default="Fido")
 
 class TestModel(ndb.Model):
     pass
@@ -135,10 +138,20 @@ for prop,kind in PROPERTIES.items():
             o['required'] = True
         if 'repeated' in options:
             o['repeated'] = True
-        print klass_name, o
-        p = prop(**o)
+
+        if prop == ndb.StructuredProperty or \
+           prop == ndb.LocalStructuredProperty:
+            p = prop(PetModel, **o)
+        elif prop == ndb.ComputedProperty:
+            # Very Strange. ndb.ComputedProperty will let you pass
+            # only repeated and indexed as additional. I am not really
+            # clear what repeated does... Bit wastfull, but just passing
+            # the most basic compute fx regardless of options.
+            p = prop(COMPUTE_FX)
+        else:
+            p = prop(**o)
         klass = type(klass_name, (ndb.Model,), {prop_name: p})
-    # print klass, kind, default, choices
+        # print klass, kind, default, choices
 
 
 class GeneratorTest(unittest.TestCase):
