@@ -78,8 +78,12 @@ CHOICES = {
     time: [TIME_NOW],
     ndb.GeoPt: [ndb.GeoPt(-1, -1), ndb.GeoPt(0, 0), ndb.GeoPt(1, 1)],
     'ndb.Key': [key_1, key_2],
-    'serialized': [{'key1': True, 'key2': []}, {}, [1, 2.0, {}, 'val1']],
 }
+
+# Note: {'serialized': [{'key1': True, 'key2': []}, {}, [1, 2.0, {}, 'val1']]}
+# cannot be merged into CHOICES above as dictionaries cannot be added into a
+# frozenset. nd.Model.__init__ appears to require that all arguments to
+# choices be put in a frozenset...
 
 OPTIONS = {
     'repeated': bool,
