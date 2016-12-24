@@ -36,7 +36,7 @@ PROPERTIES = {
 
 COMPUTE_FX = lambda x: "COMPUTED_PROPERTY"
 
-class DefaultModel(ndb.Model):
+class TestModel(ndb.Model):
     pass
 
 # Probably wondering why fx instead of just hard coded values? Keys are
@@ -47,9 +47,9 @@ class DefaultModel(ndb.Model):
 # this code. Therefore you need to dynamically build the key at
 # runtime with a function.
 def key_1():
-    return ndb.Key('DefaultModel', "DEFAULT_MODEL_NAME_1")
+    return ndb.Key('TestModel', "DEFAULT_MODEL_NAME_1")
 def key_2():
-    return ndb.Key('DefaultModel', "DEFAULT_MODEL_NAME_2")
+    return ndb.Key('TestModel', "DEFAULT_MODEL_NAME_2")
 
 DATETIME_NOW = datetime.now()
 DATE_NOW = datetime.now().date()
@@ -100,14 +100,41 @@ for i in range(len(OPTIONS)):
                 options)
             options = tuple(options)
         OPTIONS_KEYS.add(options)
+OPTIONS_KEYS = sorted(OPTIONS_KEYS)
 
-for prop,value in PROPERTIES.items():
+for prop,kind in PROPERTIES.items():
     # I am using `.get(k)` instead of `[k]` for `choices` and `default` as
     # some options don't have meaningful values. What is the `defaults` for
     # a `ndb.ComputedProperty` or `ndb.KeyProperty`?
-    choices = CHOICES.get(value)
-    defaults = DEFAULTS.get(value)
-    print value, choices, defaults
+    choices = CHOICES.get(kind)
+    default = DEFAULTS.get(kind)
+
+    # This is a goofy hack to deal with the keys not having the right
+    # application_id at compile time vs runtime.
+    if choices:
+        for i,x in enumerate(choices):
+            if callable(x):
+                choices[i] = x()
+
+    if default and callable(default):
+        default = default()
+
+    for options in OPTIONS_KEYS:
+        klass_name = prop.__name__ + 'Model'
+        prop_name = prop.__name__[0].lower() + prop.__name__[1:]
+        o = {}
+        if choices and 'choices' in options:
+            o['choices'] = choices
+        if default and 'default' in options:
+            o['default'] = default
+        if 'required' in options:
+            o['required'] = True
+        if 'repeated' in options:
+            o['repeated'] = True
+        print klass_name, o
+        p = prop(**o)
+        klass = type(klass_name, (ndb.Model,), {prop_name: p})
+    # print klass, kind, default, choices
 
 
 class GeneratorTest(unittest.TestCase):
