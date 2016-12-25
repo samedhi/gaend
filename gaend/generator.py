@@ -31,7 +31,8 @@ def key_2():
     return ndb.Key('TestModel', "DEFAULT_MODEL_NAME_2")
 
 # This is all the ndb.*Property under test. A few Properties were not tested
-# as they seemed depreciated or unecessary.
+# as they seemed depreciated or unecessary. Note that ndb.ComputedProperty is
+# included in the set of classes for each property in ./tests/generator_test.py
 #
 # Untested Property Types:
 # ndb.BlobKeyProperty - Holdover from `db` days?
@@ -53,7 +54,6 @@ PROPERTIES = {
     ndb.LocalStructuredProperty: 'ndb.Key',
     ndb.JsonProperty: 'serialized',
     ndb.PickleProperty: 'serialized',
-    ndb.ComputedProperty: 'computed',
 }
 
 DATETIME_NOW = datetime.now()
