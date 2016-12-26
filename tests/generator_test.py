@@ -4,6 +4,7 @@ from gaend.generator import DEFAULTS, CHOICES, OPTION_KEYS, PROPERTIES
 import unittest
 import webtest
 
+
 def all_props_combination():
     """The set of classes representing all Property combinations
 
@@ -15,7 +16,7 @@ def all_props_combination():
     options would be `StringPropertyModel`.
     """
     ps = []
-    for prop,kind in PROPERTIES.items():
+    for prop, kind in PROPERTIES.items():
         # I am using `.get(k)` instead of `[k]` for `choices` and `default` as
         # some options don't have meaningful values. As an example, what is the
         # `defaults` for a `ndb.ComputedProperty` or `ndb.KeyProperty`?
@@ -32,7 +33,7 @@ def all_props_combination():
             o = {}
             if choices and 'choices' in options:
                 choices = list(choices)
-                for i,x in enumerate(choices):
+                for i, x in enumerate(choices):
                     if callable(x):
                         choices[i] = x()
                 o['choices'] = choices
@@ -57,10 +58,11 @@ def all_props_combination():
     # only repeated and indexed as additional. I am not really
     # clear what repeated does... Bit wastfull, but just passing
     # the most basic compute fx regardless of options.
-    p = ndb.ComputedProperty(generator.COMPUTE_FX)
+    p = ndb.ComputedProperty(generator.compute_fx)
     klass = type('ComputedPropertyModel', (ndb.Model,), {prop_name: p})
     ps.append(klass)
     return ps
+
 
 class GeneratorTest(unittest.TestCase):
 

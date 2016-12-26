@@ -7,16 +7,21 @@ import itertools
 # cloud.google.com/appengine/docs/python/ndb/entity-property-reference
 # cloud.google.com/appengine/docs/python/ndb/creating-entity-models#expando
 
+
 # This is the compute fx passed to a ndb.ComputedProperty
-COMPUTE_FX = lambda self: "COMPUTED_PROPERTY"
+def compute_fx(self):
+    return "COMPUTED_PROPERTY"
+
 
 # These are the Models used for ndb.Key's as well as
 # ndb.StructuredProperty and ndb.LocalStructuredProperty
 class PetModel(ndb.Model):
     name = ndb.StringProperty(default="Fido")
 
+
 class TestModel(ndb.Model):
     pass
+
 
 # Probably wondering why fx instead of just hard coded values? Keys are
 # really built with the application_id as part of the key. Because the
@@ -27,8 +32,11 @@ class TestModel(ndb.Model):
 # runtime with a function.
 def key_1():
     return ndb.Key('TestModel', "DEFAULT_MODEL_NAME_1")
+
+
 def key_2():
     return ndb.Key('TestModel', "DEFAULT_MODEL_NAME_2")
+
 
 # This is all the ndb.*Property under test. A few Properties were not tested
 # as they seemed depreciated or unecessary. Note that ndb.ComputedProperty is
@@ -70,7 +78,7 @@ DEFAULTS = {
     datetime: DATETIME_NOW,
     date: DATE_NOW,
     time: TIME_NOW,
-    ndb.GeoPt: ndb.GeoPt(0,0),
+    ndb.GeoPt: ndb.GeoPt(0, 0),
     'ndb.Key': key_1,
     'serialized': {},
 }
