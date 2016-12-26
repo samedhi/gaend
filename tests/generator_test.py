@@ -28,7 +28,8 @@ def all_props_combination():
         # see that something is a function rather than data, we will call the
         # function to get a value for the data.
         for options in OPTION_KEYS:
-            klass_name = prop.__name__ + 'Model'
+            key_names = sorted([k.capitalize() for k in options])
+            klass_name = prop.__name__ + "".join(key_names) + 'Model'
             prop_name = prop.__name__[0].lower() + prop.__name__[1:]
             o = {}
             if choices and 'choices' in options:
