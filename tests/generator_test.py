@@ -10,10 +10,10 @@ def all_props_combination():
 
     This function returns a mathematical combination of classes, where each
     class is made of exactly one Property and zero or more options. The classes
-    are named <PropertyKind>Property<CamelCased-Sorted-Option-Keys>Model. So a
-    `ndb.KeyProperty` with `choices` and `default` as option would have a class
-    name of `KeyPropertyDefaultChoicesModel`. A `ndb.StringProperty` with no
-    options would be `StringPropertyModel`.
+    are named `<PropertyKind>Property<CamelCased-Sorted-Option-Keys>Model`. So
+    a `ndb.KeyProperty` with `choices` and `default` as option would have a
+    class name of `KeyPropertyDefaultChoicesModel`. A `ndb.StringProperty` with
+    no options would have a class name of `StringPropertyModel`.
     """
     ps = []
     for prop, kind in PROPERTIES.items():
