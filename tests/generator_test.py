@@ -5,6 +5,15 @@ import unittest
 import webtest
 
 def all_props_combination():
+    """The set of classes representing all Property combinations
+
+    This function returns a mathematical combination of classes, where each
+    class is made of exactly one Property and zero or more options. The classes
+    are named <PropertyKind>Property<CamelCased-Sorted-Option-Keys>Model. So a
+    `ndb.KeyProperty` with `choices` and `default` as option would have a class
+    name of `KeyPropertyDefaultChoicesModel`. A `ndb.StringProperty` with no
+    options would be `StringPropertyModel`.
+    """
     ps = []
     for prop,kind in PROPERTIES.items():
         # I am using `.get(k)` instead of `[k]` for `choices` and `default` as
@@ -50,7 +59,7 @@ def all_props_combination():
     # the most basic compute fx regardless of options.
     p = ndb.ComputedProperty(generator.COMPUTE_FX)
     klass = type('ComputedPropertyModel', (ndb.Model,), {prop_name: p})
-    ps.append((klass.__name__, {}, klass))
+    ps.append(klass)
     return ps
 
 class GeneratorTest(unittest.TestCase):

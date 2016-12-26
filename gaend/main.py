@@ -1,8 +1,4 @@
-from flask import jsonify
-from flask import request
-from flask import Flask
-from google.appengine.ext import ndb
-
+from flask import Flask, jsonify, request
 import generator
 
 app = Flask(__name__)
