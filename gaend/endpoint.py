@@ -29,9 +29,8 @@ def get(urlsafekey):
     1) All `ndb.Key` entity properties are converted to their urlsafe keys.
     2) All `datetime`, `date`, and `time` objects are converted to iso8601.
     3) Json, Pickled, and *Structured are converted to sub-dictionaries.
-    4) ndb.GeoPt(X,Y) are converted to `{'x': X, 'y': Y}
+    4) ndb.GeoPt(X,Y) are converted to `{'x': X, 'y': Y}`
     5) Every other property is directly copied.
-
 
     """
     pass
