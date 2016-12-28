@@ -1,6 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask
 
 APP = Flask(__name__)
 APP.config['DEBUG'] = True
-
-MODELS = {}

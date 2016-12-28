@@ -1,2 +1,2 @@
-from state import APP, MODELS
+from state import APP
 import endpoint
