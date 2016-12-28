@@ -12,7 +12,7 @@ def entity_to_props(entity):
     """
     d = entity.to_dict()
     d['key'] = entity.key
-    d['kind'] = entity.__class__.__name__
+    d['kind'] = entity._get_kind()
     return d
 
 
@@ -31,14 +31,13 @@ def props_to_entity(props):
     `props` (without the 'kind' key) will then be passed as the arguments
     to the newly constructed Entity.
     """
-    klass_name = d['kind']
+    kind = d['kind']
     props = copy.copy(props)
     del props['kind']
     if 'key' in props:
-        assert d['key'].kind() == klass_name
         entity = d['key'].get()
         entity.populate(**props)
     else:
-        klass = MODELS[klass_name]
+        klass = ndb.Model._lookup_model(kind)
         entity = klass(**props)
     return entity
