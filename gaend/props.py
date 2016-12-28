@@ -19,7 +19,8 @@ def entity_to_props(entity):
 def props_to_entity(props):
     """Converts props into a Datastore Entity
 
-    The converts from a `props` python dict into a `ndb.Model` Entity.
+    Converts from a `props` python dict into a `ndb.Model` Entity.
+
     `props` requires a 'kind' key which must specify the class name
     of the Entity it represents.
 
@@ -28,10 +29,16 @@ def props_to_entity(props):
     a new Entity will be created from the matching 'kind' class.
 
     `props` (without the 'kind' key) will then be passed as the arguments
-    to the Entity.
+    to the newly constructed Entity.
     """
     klass_name = d['kind']
-    klass = MODELS[klass_name]
     props = copy.copy(props)
     del props['kind']
-    return klass(**props)
+    if 'key' in props:
+        assert d['key'].kind() == klass_name
+        entity = d['key'].get()
+        entity.populate(**props)
+    else:
+        klass = MODELS[klass_name]
+        entity = klass(**props)
+    return entity
