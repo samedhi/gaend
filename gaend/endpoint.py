@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from google.appengine.ext import testbed, ndb
-
+import props
 
 def post(props):
     """Create a new entity
@@ -49,14 +49,4 @@ def put(urlsafekey, props):
 
 def delete(urlsafekey):
     """Destroy a entity"""
-    pass
-
-
-def add(flaskApp, model):
-    """Add a ndb.Model as a restful endpoint"""
-    pass
-
-
-def remove(flaskApp, model):
-    """Remove a ndb.Model as a restful endpoint"""
     pass

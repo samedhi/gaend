@@ -1,6 +1,7 @@
 from google.appengine.ext import testbed, ndb
-from gaend.main import app, generator
 from gaend.generator import DEFAULTS, CHOICES, OPTION_KEYS, PROPERTIES
+from gaend.state import APP
+import gaend.generator as generator
 import unittest
 import webtest
 
@@ -68,7 +69,7 @@ def all_props_combination():
 class GeneratorTest(unittest.TestCase):
 
     def setUp(self):
-        self.testapp = webtest.TestApp(app)
+        self.testapp = webtest.TestApp(APP)
         self.testbed = testbed.Testbed()
         self.testbed.activate()
         self.testbed.init_datastore_v3_stub()
