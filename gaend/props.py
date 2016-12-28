@@ -1,16 +1,19 @@
 from google.appengine.ext import testbed, ndb
-
+import copy
 
 def entity_to_props(entity):
     """Converts a Datastore Entity into props
 
     Converts a ndb.Model Entity into its props form. The props form
-    contains all of the properties set within the entity. The props
+    contains all of the properties within the entity as a dict. The props
     form also contains a 'kind' that points to the string form
     of the matching class. The `props` form also contains a 'key'
     that contains the entity.key() object.
     """
-    pass
+    d = entity.to_dict()
+    d['key'] = entity.key
+    d['kind'] = entity.__class__.__name__
+    return d
 
 
 def props_to_entity(props):
@@ -27,4 +30,8 @@ def props_to_entity(props):
     `props` (without the 'kind' key) will then be passed as the arguments
     to the Entity.
     """
-    pass
+    klass_name = d['kind']
+    klass = MODELS[klass_name]
+    props = copy.copy(props)
+    del props['kind']
+    return klass(**props)
