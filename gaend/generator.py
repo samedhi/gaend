@@ -46,6 +46,17 @@ def key_2():
 # ndb.BlobKeyProperty - Holdover from `db` days?
 # ndb.UserProperty - Google recomends not using this
 # ndb.GenericProperty - Why not just use ndb.Expando class?
+#
+# DEV NOTE: I remaing unconvinced that ndb.*StructuredProperty are worth their
+# added mental complexity. I feel that you would almost always be better off
+# creating additional full fledged entities and then refering to them by key.
+# Unless your application has substantial performance or data size constraints,
+# I feel that anything that can be done with a structured property can more
+# understandably be done with multiple writes with transactions.
+# tldr; I have chosen not to test them, but will be happy to accept pull request
+# that do!
+# ndb.StructuredProperty - NOT TESTED
+# ndb.LocalStructuredProperty - NOT TESTED
 PROPERTIES = {
     ndb.IntegerProperty: int,
     ndb.FloatProperty: float,
@@ -58,8 +69,6 @@ PROPERTIES = {
     ndb.DateTimeProperty: datetime,
     ndb.GeoPtProperty: ndb.GeoPt,
     ndb.KeyProperty: 'ndb.Key',
-    ndb.StructuredProperty: 'ndb.Key',
-    ndb.LocalStructuredProperty: 'ndb.Key',
     ndb.JsonProperty: 'serialized',
     ndb.PickleProperty: 'serialized',
 }
