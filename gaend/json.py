@@ -1,5 +1,6 @@
 from google.appengine.ext import testbed, ndb
 from datetime import datetime, date, time
+import copy
 import datetutil.parser
 import json
 
@@ -32,6 +33,21 @@ def ndb_to_js(t, v):
         return v
 
 
+def process_properties(d, fx)
+    kind = d['kind']
+    klass = ndb.Model._lookup_model(kind)
+    for k, v in d.items():
+        if k not in ['key', 'kind']:
+            p = klass._properties[k]
+            t = type(p)
+            if type(v) is list:
+                vs = v
+                new_vs = [fx(t, v) for v in vs]
+                d[k] = new_vs
+            else:
+                d[k] = fx(t, v)
+
+
 def js_to_props(js):
     """Converts serialized JSON into props
 
@@ -41,21 +57,12 @@ def js_to_props(js):
     will be queried to determine how to convert the value in the
     (key,value) pairs of `js` into Python Objects.
     """
-    d = json.loads(js)
-    kind = d['kind']
-    klass = ndb.Model._lookup_model(kind)
-    if 'key' in d:
-        d['key'] = ndb.Key(urlsafe=d['key'])
-    for k, v in d.items():
-        if k not in ['key', 'kind']:
-            p = klass._properties[k]
-            t = type(p)
-            if type(v) is list:
-                vs = v
-                new_vs = [js_to_ndb(t, v) for v in vs]
-                d[k] = new_vs
-            else:
-                d[k] = js_to_ndb(t, v)
+    js = json.loads(js)
+    if 'key' in js:
+        js['key'] = ndb.Key(urlsafe=d['key'])
+    process_properties(js, js_to_ndb)
+    return js
+
 
 def props_to_js(props):
     """Converts props into serialized JSON
@@ -66,4 +73,8 @@ def props_to_js(props):
     will be queried to determine how to convert the value in the
     (key,value) pairs of `props` into a JSON object.
     """
-    pass
+    props = copy.copy(props)
+    if 'key' in props:
+        props['key'] = k.urlsafe()
+    process_properties(props, ndb_to_js)
+    return props
