@@ -32,12 +32,8 @@ def props_to_entity(props):
     to the newly constructed Entity.
     """
     kind = d['kind']
+    klass = ndb.Model._lookup_model(kind)
     props = copy.copy(props)
     del props['kind']
-    if 'key' in props:
-        entity = d['key'].get()
-        entity.populate(**props)
-    else:
-        klass = ndb.Model._lookup_model(kind)
-        entity = klass(**props)
+    entity = klass(**props)
     return entity
