@@ -29,15 +29,18 @@ def js_to_props(js):
     d = json.loads(js)
     kind = d['kind']
     klass = ndb.Model._lookup_model(kind)
-    for k, v in d:
-        p = klass._properties[k]
-        t = type(p)
-        if type(v) is list:
-            vs = v
-            new_vs = [js_to_ndb(t, v) for v in vs]
-            d[k] = new_vs
-        else:
-            d[k] = js_to_ndb(t, v)
+    if 'key' in d:
+        d['key'] = ndb.Key(urlsafe=d['key'])
+    for k, v in d.items():
+        if k not in ['key', 'kind']:
+            p = klass._properties[k]
+            t = type(p)
+            if type(v) is list:
+                vs = v
+                new_vs = [js_to_ndb(t, v) for v in vs]
+                d[k] = new_vs
+            else:
+                d[k] = js_to_ndb(t, v)
 
 def props_to_js(props):
     """Converts props into serialized JSON
