@@ -1,4 +1,5 @@
 from google.appengine.ext import testbed, ndb
+from datetime import datetime, date, time
 import datetutil.parser
 import json
 
@@ -6,8 +7,14 @@ import json
 def js_to_ndb(t, v):
     if t is ndb.KeyProperty:
         return ndb.Key(urlsafe=v)
-    elif t in [ndb.DateTimeProperty, ndb.DateProperty, ndb.TimeProperty]:
-        return dateutil.parser.parse(v)
+    elif t is [ndb.DateTimeProperty, ndb.DateProperty, ndb.TimeProperty]:
+        d = dateutil.parser.parse(v)
+        if t is ndb.DateProperty:
+            return date(d.year, d.month, d.day)
+        elif t is ndb.TimeProperty:
+            return time(d.hour, d.minute, d.second, d.microsecond)
+        else:
+            return d
     elif t is ndb.GeoPt:
         return ndb.GeoPt(v['x'], v['y'])
     else:
@@ -15,6 +22,14 @@ def js_to_ndb(t, v):
 
 
 def ndb_to_js(t, v):
+    if t is ndb.KeyProperty:
+        return v.urlsafe()
+    elif t is [ndb.DateTimeProperty, ndb.DateProperty, ndb.TimeProperty]:
+        return v.isoformat()
+    elif t is ndb.GeoPt:
+        return {'x': v.x, 'y': v.y}
+    else:
+        return v
 
 
 def js_to_props(js):
