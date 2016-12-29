@@ -1,6 +1,7 @@
 from google.appengine.ext import testbed, ndb
 import copy
 
+
 def entity_to_props(entity):
     """Converts a Datastore Entity into props
 
