@@ -59,9 +59,9 @@ def all_props_combination():
     # only repeated and indexed as additional. I am not really
     # clear what repeated does... Bit wastfull, but just passing
     # the most basic compute fx regardless of options.
-    p = ndb.ComputedProperty(generator.compute_fx)
-    klass = type('ComputedPropertyModel', (ndb.Model,), {prop_name: p})
-    ps.append(klass)
+    # p = ndb.ComputedProperty(generator.compute_fx)
+    # klass = type('ComputedPropertyModel', (ndb.Model,), {'computedProperty': p})
+    # ps.append(klass)
     return ps
 
 
