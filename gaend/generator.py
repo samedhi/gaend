@@ -95,11 +95,6 @@ DEFAULTS = {
 # Possible choices of values for the property of the given type. If a property
 # has a choices=<list-of-choices> then <list-of-choices> will be pulled for
 # this CHOICES dictionary.
-
-# Note: {'serialized': [{'key1': True, 'key2': []}, {}, [1, 2.0, {}, 'val1']]}
-# cannot be merged into CHOICES as dictionaries cannot be added into a
-# frozenset. nd.Model.__init__ appears to require that all arguments to
-# choices be put in a frozenset...
 CHOICES = {
     bool: [True, False],
     int: [-1, 0, 1],
@@ -111,6 +106,16 @@ CHOICES = {
     ndb.GeoPt: [ndb.GeoPt(-1, -1), ndb.GeoPt(0, 0), ndb.GeoPt(1, 1)],
     'ndb.Key': [key_1, key_2],
 }
+
+# CHOICES and VALUES differ only in that values contains the additional
+# 'serialized' key/value pair. 'serialized' cannot be provided as a `choice`
+# as `nd.Model.__init__` require that all arguments to `choice` be put
+# in a frozenset...
+VALUES = {'serialized': [{'key1': True, 'key2': []},
+                         {},
+                         [1, 2.0, {}, 'val1']]}
+for k, v in CHOICES.items():
+    VALUES[k] = v
 
 # The options that are passed to a ndb.Property(). Note that not all options
 # can be passed to every ndb.Property(). As an example, 'computed' type can
