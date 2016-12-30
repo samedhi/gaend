@@ -5,7 +5,7 @@ import unittest
 import webtest
 
 
-class GeneratorTest(unittest.TestCase):
+class PropsTest(unittest.TestCase):
 
     def setUp(self):
         self.testapp = webtest.TestApp(APP)
