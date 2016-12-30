@@ -1,22 +1,8 @@
-from gaend.state import APP
+from fixture import GeneratorTest
 from google.appengine.ext import testbed, ndb
-import fixture
-import unittest
-import webtest
 
 
-class GeneratorTest(unittest.TestCase):
-
-    def setUp(self):
-        self.testapp = webtest.TestApp(APP)
-        self.testbed = testbed.Testbed()
-        self.testbed.activate()
-        self.testbed.init_datastore_v3_stub()
-        self.testbed.init_memcache_stub()
-        self.klasses = fixture.all_props_combination()
-
-    def tearDown(self):
-        self.testbed.deactivate()
+class GeneratorTest(GeneratorTest):
 
     def testLotsaModelsGenerated(self):
         for klass in self.klasses:

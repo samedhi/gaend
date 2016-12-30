@@ -1,5 +1,8 @@
+from gaend.state import APP
 from google.appengine.ext import testbed, ndb
 import gaend.generator as generator
+import unittest
+import webtest
 
 
 def all_props_combination():
@@ -60,3 +63,16 @@ def all_props_combination():
     klass = type('ComputedPropertyModel', (ndb.Model,), {prop_name: p})
     ps.append(klass)
     return ps
+
+
+class GeneratorTest(unittest.TestCase):
+    def setUp(self):
+        self.testapp = webtest.TestApp(APP)
+        self.testbed = testbed.Testbed()
+        self.testbed.activate()
+        self.testbed.init_datastore_v3_stub()
+        self.testbed.init_memcache_stub()
+        self.klasses = all_props_combination()
+
+    def tearDown(self):
+        self.testbed.deactivate()
