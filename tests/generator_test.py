@@ -54,7 +54,7 @@ def all_props_combination():
             else:
                 p = prop(**o)
             klass = type(klass_name, (ndb.Model,), {prop_name: p})
-            ps.append((klass_name, o, klass))
+            ps.append(klass)
 
     # Very Strange. ndb.ComputedProperty will let you pass
     # only repeated and indexed as additional. I am not really
@@ -79,5 +79,7 @@ class GeneratorTest(unittest.TestCase):
     def tearDown(self):
         self.testbed.deactivate()
 
-    def testTruthItself(self):
-        assert True
+    def testLotsaModelsGenerated(self):
+        for klass in self.klasses:
+            k = klass._get_kind()
+            assert ndb.Model._lookup_model(k) == klass, klass
