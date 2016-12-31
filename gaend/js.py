@@ -1,23 +1,24 @@
 from google.appengine.ext import testbed, ndb
 from datetime import datetime, date, time
+from dateutil import parser
 import copy
-import datetutil.parser
 import json
-
 
 def js_to_ndb(t, v):
     if t is ndb.KeyProperty:
         return ndb.Key(urlsafe=v)
-    elif t is [ndb.DateTimeProperty, ndb.DateProperty, ndb.TimeProperty]:
-        d = dateutil.parser.parse(v)
+    elif t in [ndb.DateTimeProperty, ndb.DateProperty, ndb.TimeProperty]:
+        d = parser.parse(v)
         if t is ndb.DateProperty:
             return date(d.year, d.month, d.day)
         elif t is ndb.TimeProperty:
             return time(d.hour, d.minute, d.second, d.microsecond)
         else:
             return d
-    elif t is ndb.GeoPt:
-        return ndb.GeoPt(v['x'], v['y'])
+    elif t is ndb.GeoPtProperty:
+        return ndb.GeoPt(v['lat'], v['lon'])
+    elif isinstance(v, basestring):
+        return str(v)
     else:
         return v
 
@@ -25,15 +26,15 @@ def js_to_ndb(t, v):
 def ndb_to_js(t, v):
     if t is ndb.KeyProperty:
         return v.urlsafe()
-    elif t is [ndb.DateTimeProperty, ndb.DateProperty, ndb.TimeProperty]:
+    elif t in [ndb.DateTimeProperty, ndb.DateProperty, ndb.TimeProperty]:
         return v.isoformat()
-    elif t is ndb.GeoPt:
-        return {'x': v.x, 'y': v.y}
+    elif t is ndb.GeoPtProperty:
+        return {'lat': v.lat, 'lon': v.lon}
     else:
         return v
 
 
-def process_properties(d, fx)
+def process_properties(d, fx):
     kind = d['kind']
     klass = ndb.Model._lookup_model(kind)
     for k, v in d.items():
@@ -77,4 +78,4 @@ def props_to_js(props):
     if 'key' in props:
         props['key'] = k.urlsafe()
     process_properties(props, ndb_to_js)
-    return props
+    return json.dumps(props)

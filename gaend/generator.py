@@ -99,7 +99,7 @@ CHOICES = {
     bool: [True, False],
     int: [-1, 0, 1],
     float: [-1.0, 0.0, 1.0],
-    basestring: ["", "a", "z"],
+    basestring: ['1234567890', 'a', 'z'],
     datetime: [DATETIME_NOW],
     date: [DATE_NOW],
     time: [TIME_NOW],
