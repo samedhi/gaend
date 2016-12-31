@@ -12,7 +12,8 @@ def entity_to_props(entity):
     that contains the entity.key() object.
     """
     d = entity.to_dict()
-    d['key'] = entity.key
+    if entity.key:
+        d['key'] = entity.key
     d['kind'] = entity._get_kind()
     return d
 
@@ -32,7 +33,7 @@ def props_to_entity(props):
     `props` (without the 'kind' key) will then be passed as the arguments
     to the newly constructed Entity.
     """
-    kind = d['kind']
+    kind = props['kind']
     klass = ndb.Model._lookup_model(kind)
     props = copy.copy(props)
     del props['kind']
