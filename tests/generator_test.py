@@ -8,3 +8,5 @@ class GeneratorTest(GeneratorTest):
         for klass in self.klasses:
             k = klass._get_kind()
             assert ndb.Model._lookup_model(k) == klass, klass
+
+        assert len(self.klasses) > 100
