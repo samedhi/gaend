@@ -7,16 +7,21 @@ import itertools
 # cloud.google.com/appengine/docs/python/ndb/entity-property-reference
 # cloud.google.com/appengine/docs/python/ndb/creating-entity-models#expando
 
+
 # This is the compute fx passed to a ndb.ComputedProperty
-COMPUTE_FX = lambda self: "COMPUTED_PROPERTY"
+def compute_fx(self):
+    return "COMPUTED_PROPERTY"
+
 
 # These are the Models used for ndb.Key's as well as
 # ndb.StructuredProperty and ndb.LocalStructuredProperty
 class PetModel(ndb.Model):
     name = ndb.StringProperty(default="Fido")
 
+
 class TestModel(ndb.Model):
     pass
+
 
 # Probably wondering why fx instead of just hard coded values? Keys are
 # really built with the application_id as part of the key. Because the
@@ -27,8 +32,11 @@ class TestModel(ndb.Model):
 # runtime with a function.
 def key_1():
     return ndb.Key('TestModel', "DEFAULT_MODEL_NAME_1")
+
+
 def key_2():
     return ndb.Key('TestModel', "DEFAULT_MODEL_NAME_2")
+
 
 # This is all the ndb.*Property under test. A few Properties were not tested
 # as they seemed depreciated or unecessary. Note that ndb.ComputedProperty is
@@ -38,6 +46,17 @@ def key_2():
 # ndb.BlobKeyProperty - Holdover from `db` days?
 # ndb.UserProperty - Google recomends not using this
 # ndb.GenericProperty - Why not just use ndb.Expando class?
+#
+# DEV NOTE: I remain unconvinced that ndb.*StructuredProperty are worth their
+# added mental complexity. I feel that you would almost always be better off
+# creating additional full fledged entities and then refering to them by key.
+# Unless your application has substantial performance or data size constraints,
+# I feel that anything that can be done with a structured property can more
+# understandably be done with multiple writes with transactions.
+# tldr; I have chosen not to test them, but will be happy to accept pull request
+# that do!
+# ndb.StructuredProperty - NOT TESTED
+# ndb.LocalStructuredProperty - NOT TESTED
 PROPERTIES = {
     ndb.IntegerProperty: int,
     ndb.FloatProperty: float,
@@ -50,8 +69,6 @@ PROPERTIES = {
     ndb.DateTimeProperty: datetime,
     ndb.GeoPtProperty: ndb.GeoPt,
     ndb.KeyProperty: 'ndb.Key',
-    ndb.StructuredProperty: 'ndb.Key',
-    ndb.LocalStructuredProperty: 'ndb.Key',
     ndb.JsonProperty: 'serialized',
     ndb.PickleProperty: 'serialized',
 }
@@ -70,7 +87,7 @@ DEFAULTS = {
     datetime: DATETIME_NOW,
     date: DATE_NOW,
     time: TIME_NOW,
-    ndb.GeoPt: ndb.GeoPt(0,0),
+    ndb.GeoPt: ndb.GeoPt(0, 0),
     'ndb.Key': key_1,
     'serialized': {},
 }
@@ -78,22 +95,27 @@ DEFAULTS = {
 # Possible choices of values for the property of the given type. If a property
 # has a choices=<list-of-choices> then <list-of-choices> will be pulled for
 # this CHOICES dictionary.
-
-# Note: {'serialized': [{'key1': True, 'key2': []}, {}, [1, 2.0, {}, 'val1']]}
-# cannot be merged into CHOICES as dictionaries cannot be added into a
-# frozenset. nd.Model.__init__ appears to require that all arguments to
-# choices be put in a frozenset...
 CHOICES = {
     bool: [True, False],
     int: [-1, 0, 1],
     float: [-1.0, 0.0, 1.0],
-    basestring: ["", "a", "z"],
+    basestring: ['1234567890', 'a', 'z'],
     datetime: [DATETIME_NOW],
     date: [DATE_NOW],
     time: [TIME_NOW],
     ndb.GeoPt: [ndb.GeoPt(-1, -1), ndb.GeoPt(0, 0), ndb.GeoPt(1, 1)],
     'ndb.Key': [key_1, key_2],
 }
+
+# CHOICES and VALUES differ only in that values contains the additional
+# 'serialized' key/value pair. 'serialized' cannot be provided as a `choice`
+# as `nd.Model.__init__` require that all arguments to `choice` be put
+# in a frozenset...
+VALUES = {'serialized': [{'key1': True, 'key2': []},
+                         {},
+                         [1, 2.0, {}, 'val1']]}
+for k, v in CHOICES.items():
+    VALUES[k] = v
 
 # The options that are passed to a ndb.Property(). Note that not all options
 # can be passed to every ndb.Property(). As an example, 'computed' type can
