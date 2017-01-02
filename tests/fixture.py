@@ -1,4 +1,4 @@
-from gaend.state import APP
+from gaend.main import APP
 from google.appengine.ext import testbed, ndb
 import gaend.generator as generator
 import unittest

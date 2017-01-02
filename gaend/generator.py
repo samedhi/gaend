@@ -47,7 +47,7 @@ def key_2():
 # ndb.UserProperty - Google recomends not using this
 # ndb.GenericProperty - Why not just use ndb.Expando class?
 #
-# DEV NOTE: I remaing unconvinced that ndb.*StructuredProperty are worth their
+# DEV NOTE: I remain unconvinced that ndb.*StructuredProperty are worth their
 # added mental complexity. I feel that you would almost always be better off
 # creating additional full fledged entities and then refering to them by key.
 # Unless your application has substantial performance or data size constraints,

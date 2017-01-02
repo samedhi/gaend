@@ -8,7 +8,10 @@ import re
 
 class PropsTest(GeneratorTest):
 
-    def testEndpoints(self):
+    def testRoot(self):
+        response = self.testapp.get('/')
+
+    def endpoints(self):
         for klass in self.klasses:
             kind = klass._get_kind()
             prop_name = re.match(r'(.+)Property', kind).group(1)
