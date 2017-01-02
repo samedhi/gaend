@@ -11,7 +11,7 @@ class PropsTest(GeneratorTest):
     def testRoot(self):
         response = self.testapp.get('/')
 
-    def endpoints(self):
+    def testEndpoints(self):
         for klass in self.klasses:
             kind = klass._get_kind()
             prop_name = re.match(r'(.+)Property', kind).group(1)
@@ -29,25 +29,32 @@ class PropsTest(GeneratorTest):
                 first_value = [first_value]
                 last_value = [last_value]
 
-            post = self.testapp.post_json(
+            post = self.testapp.post(
                 '/' + kind.lower(),
-                gjs.props_to_js({'kind': kind, prop_name: first_value}))
-
-            key = post['key']
+                gjs.props_to_js({'kind': kind, prop_name: first_value}),
+                content_type='application/json')
+            key = post.json['key']
 
             get1 = self.testapp.get('/' + kind.lower() + '/' + key)
-            assert js.js_to_props(get1)[prop_name] == first_value
+            get_value = gjs.js_to_props(get1.normal_body)[prop_name]
+            assert get_value == first_value, get1.normal_body
 
-            put = self.testapp.put_json(
+            updated = {'kind': kind,
+                       'key': ndb.Key(urlsafe=post.json['key']),
+                       prop_name: last_value}
+            put = self.testapp.put(
                 '/' + kind.lower() + '/' + key,
-                gjs.props_to_js({'kind': kind, prop_name: last_value}))
-            assert post['key'] == put['key']
+                gjs.props_to_js(updated),
+                content_type='application/json')
+            assert post.json['key'] == put.json['key']
 
             get2 = self.testapp.get('/' + kind.lower() + '/' + key)
-            assert js.js_to_props(get2)[prop_name] == last_value
+            get_value =  gjs.js_to_props(get2.normal_body)[prop_name]
+            assert get_value == last_value, get1.normal_body
 
             delete = self.testapp.delete('/' + kind.lower() + '/' + key)
-            assert get2 == delete
+            assert get2.normal_body == delete.normal_body
 
-            get3 = self.testapp.get('/' + kind.lower() + '/' + key)
-            assert get3 == None
+            get3 = self.testapp.get(
+                '/' + kind.lower() + '/' + key,
+                expect_errors=404)

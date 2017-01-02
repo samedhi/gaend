@@ -1,4 +1,5 @@
-from flask import Flask, request
+from google.appengine.ext import ndb
+from flask import Flask, request, Response
 from state import APP
 import endpoint
 import js
@@ -6,7 +7,7 @@ import js
 
 def jsonify(props):
     json = js.props_to_js(props)
-    resp = flask.Response(json)
+    resp = Response(json)
     resp.headers['Content-Type'] = 'application/json'
     return resp
 
@@ -18,14 +19,15 @@ def index():
 
 @APP.route('/<model>/<urlsafekey>', methods=['GET'])
 @APP.route('/<urlsafekey>', methods=['GET'])
-def get(urlsafekey):
+def get(urlsafekey, model=None):
     props = endpoint.get(urlsafekey)
     return jsonify(props)
 
 
 @APP.route('/', methods=['POST'])
-@APP.route('/', methods=['POST'])
-def post():
+@APP.route('/<model>', methods=['POST'])
+def post(model=None):
+    data = request.data
     props = js.js_to_props(data)
     new_props = ndb.transaction(lambda: endpoint.post(props), xg=True)
     return jsonify(new_props)
@@ -33,15 +35,16 @@ def post():
 
 @APP.route('/<model>/<urlsafekey>', methods=['PUT'])
 @APP.route('/<urlsafekey>', methods=['PUT'])
-def put(json):
-    props = js.js_to_props(json)
+def put(urlsafekey, model=None):
+    data = request.data
+    props = js.js_to_props(data)
     new_props = ndb.transaction(lambda: endpoint.put(props), xg=True)
     return jsonify(new_props)
 
 
 @APP.route('/<model>/<urlsafekey>', methods=['DELETE'])
 @APP.route('/<urlsafekey>', methods=['DELETE'])
-def delete(model, urlsafekey):
+def delete(urlsafekey, model=None):
     props = endpoint.get(urlsafekey)
     ndb.transaction(lambda: endpoint.delete(urlsafekey))
     return jsonify(props)

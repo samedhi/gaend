@@ -3,6 +3,7 @@ from datetime import datetime, date, time
 from dateutil import parser
 import copy
 import json
+import logging
 
 def js_to_ndb(t, v):
     if t is ndb.KeyProperty:
@@ -35,6 +36,7 @@ def ndb_to_js(t, v):
 
 
 def process_properties(d, fx):
+    assert isinstance(d, dict), '%s [%s]' % (d, type(d))
     kind = d['kind']
     klass = ndb.Model._lookup_model(kind)
     for k, v in d.items():
@@ -58,9 +60,13 @@ def js_to_props(js):
     will be queried to determine how to convert the value in the
     (key,value) pairs of `js` into Python Objects.
     """
-    js = json.loads(js)
+    try:
+        js = json.loads(js)
+    except ValueError:
+        logging.error(js)
+        raise
     if 'key' in js:
-        js['key'] = ndb.Key(urlsafe=d['key'])
+        js['key'] = ndb.Key(urlsafe=js['key'])
     process_properties(js, js_to_ndb)
     return js
 
@@ -76,6 +82,10 @@ def props_to_js(props):
     """
     props = copy.copy(props)
     if 'key' in props:
-        props['key'] = k.urlsafe()
+        props['key'] = props['key'].urlsafe()
     process_properties(props, ndb_to_js)
-    return json.dumps(props)
+    try:
+        return json.dumps(props)
+    except TypeError:
+        logging.error(props)
+        raise

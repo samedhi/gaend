@@ -1,4 +1,5 @@
-from google.appengine.ext import testbed, ndb
+from flask import abort
+from google.appengine.ext import ndb
 import props as gprops
 
 
@@ -19,8 +20,10 @@ def get(urlsafekey_or_entity):
         entity = urlsafekey_or_entity
         assert entity.key, entity
     else:
-        key = ndb.Key(urlsafe=urlsafekey)
+        key = ndb.Key(urlsafe=urlsafekey_or_entity)
         entity = key.get()
+        if not entity:
+            abort(404)
     return gprops.entity_to_props(entity)
 
 
@@ -37,12 +40,13 @@ def post(props):
     `ndb.Key()` object.
     """
     klass = ndb.Model._lookup_model(props['kind'])
+    del props['kind']
     entity = klass(**props)
     entity.put()
     return get(entity)
 
 
-def put(urlsafekey, props):
+def put(props):
     """Update (Merge) the props into a existent entity
 
     Transactionally retrieves the entity at `urlsafekey` and then merges
@@ -50,13 +54,15 @@ def put(urlsafekey, props):
     Datastore using the above post() method. In this way all Datastore
     writes always go through the post() method.
     """
-    entity = ndb.Key(urlsafe=urlsafekey).get()
+    assert 'key' in props, props
+    entity = props['key'].get()
     updated_props = gprops.entity_to_props(entity)
     for k, v in props.items():
-        updated_props[k] = v
+        if k not in ['kind', 'key']:
+            updated_props[k] = v
     return post(updated_props)
 
 
 def delete(urlsafekey):
     """Destroy a entity"""
-    ndb.Key(urlsafekey=urlsafekey).delete()
+    ndb.Key(urlsafe=urlsafekey).delete()
