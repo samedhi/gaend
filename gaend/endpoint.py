@@ -35,8 +35,6 @@ def post(props):
     'key' is a reserved key in `props`. If specified, the entity will be written
     with the provided 'key'. 'key' in `props` should be the urlsafe form of a
     `ndb.Key()` object.
-
-
     """
     klass = ndb.Model._lookup_model(props['kind'])
     entity = klass(**props)
