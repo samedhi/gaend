@@ -48,27 +48,3 @@ class PropsTest(GeneratorTest):
 
             get3 = self.testapp.get('/' + kind.lower() + '/' + key)
             assert get3 == None
-
-
-
-            for v in generator.VALUES[prop_type]:
-                # Convert everything to a list so that can write single
-                # code path for values that need to be computed (like
-                # ndb.Key). Then un-list non repeated items.
-
-
-                # Unpersisted
-                entity1 = klass(**{prop_name:v})
-                props1 = gprops.entity_to_props(entity1)
-                js = gjs.props_to_js(props1)
-                props2 = gjs.js_to_props(js)
-                entity2 = gprops.props_to_entity(props2)
-                assert entity1 == entity2
-
-                # Persisted
-                entity3 = klass(**{prop_name:v})
-                props3 = gprops.entity_to_props(entity3)
-                js = gjs.props_to_js(props3)
-                props4 = gjs.js_to_props(js)
-                entity4 = gprops.props_to_entity(props4)
-                assert entity3 == entity4
