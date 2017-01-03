@@ -5,9 +5,19 @@
     <link rel="stylesheet" type="text/css" href="/assets/style.css">
   </head>
   <body>
-    <ul>
+    <div class="models">
       {% for k, d in klasses.iteritems() %}
-        <li>{{ k }}</li>
+        <div class="model">
+          <div class="name"> {{ k }} </div>
+          <div class="properties">
+            {% for n, p in d.iteritems() %}
+            <div class="property">
+              <span class="name"> {{ n }} </span>
+              <span class="kind"> {{ p.__class__.__name__|replace("Property","") }} </span>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
       {% endfor %}
     </ul>
   </body>

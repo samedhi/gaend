@@ -13,8 +13,6 @@ env = Environment(loader=FileSystemLoader('templates'))
 def docs():
     o = {}
     for klass in ndb.Model._kind_map.values():
-        e = {'class': klass,
-             'properties': klass._properties}
-        o[klass.__name__] = e
+        o[klass.__name__] = klass._properties
 
     return env.get_template('documentation.html').render(klasses=o)
