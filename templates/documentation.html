@@ -6,14 +6,22 @@
   </head>
   <body>
     <div class="models">
-      {% for k, d in klasses.iteritems() %}
+      {% for model_name, model_dict in klasses.iteritems() %}
         <div class="model">
-          <div class="name"> {{ k }} </div>
+          <div class="name"> {{ model_name }} </div>
           <div class="properties">
-            {% for n, p in d.iteritems() %}
+            {% for prop_name, prop_obj in model_dict.properties.iteritems() %}
             <div class="property">
-              <span class="name"> {{ n }} </span>
-              <span class="kind"> {{ p.__class__.__name__|replace("Property","") }} </span>
+              <span class="name"> {{ prop_name }} </span>
+              <span class="kind">
+                {{ prop_obj.propClass.__class__.__name__ | replace("Property","") }} </span>
+              <span class="examples">
+                {% for e in prop_obj.vals %}
+                <span class="example">
+                  {{ e }}
+                </span>
+                {% endfor %}
+              </span>
             </div>
             {% endfor %}
           </div>
