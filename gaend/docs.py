@@ -7,8 +7,8 @@ from state import APP
 import logging
 
 class User(ndb.Model):
-    name = ndb.DateTimeProperty()
-    email = ndb.StringProperty()
+    born = ndb.DateTimeProperty()
+    name = ndb.StringProperty(choices=['billy', 'bob'])
 
 env = Environment(loader=FileSystemLoader('templates'))
 
@@ -21,6 +21,8 @@ def docs():
             prop_klass = p.__class__
             kind = generator.PROPERTIES[prop_klass]
             values = generator.VALUES[kind]
+            if p._choices:
+                values = p._choices
             pd[k] = {'propClass': p,
                      'vals': values}
         klasses[klass.__name__] = {'modelClass': klass,
