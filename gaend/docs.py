@@ -14,17 +14,16 @@ env = Environment(loader=FileSystemLoader('templates'))
 
 @APP.route('/docs', methods=['GET'])
 def docs():
-    o = OrderedDict([])
+    klasses = OrderedDict([])
     for klass in ndb.Model._kind_map.values():
-        pd = {}
+        pd = OrderedDict([])
         for k, p in klass._properties.iteritems():
-            klass = p.__class__
-            kind = generator.PROPERTIES[klass]
+            prop_klass = p.__class__
+            kind = generator.PROPERTIES[prop_klass]
             values = generator.VALUES[kind]
-            logging.error(values)
             pd[k] = {'propClass': p,
                      'vals': values}
-        o[klass.__name__] = {'modelClass': klass,
-                             'properties': pd}
+        klasses[klass.__name__] = {'modelClass': klass,
+                                   'properties': pd}
 
-    return env.get_template('documentation.html').render(klasses=o)
+    return env.get_template('documentation.html').render(klasses=klasses)
