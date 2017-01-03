@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from google.appengine.ext import ndb
 from flask import request, Response
 from gaend import generator
@@ -13,7 +14,7 @@ env = Environment(loader=FileSystemLoader('templates'))
 
 @APP.route('/docs', methods=['GET'])
 def docs():
-    o = {}
+    o = OrderedDict([])
     for klass in ndb.Model._kind_map.values():
         pd = {}
         for k, p in klass._properties.iteritems():
