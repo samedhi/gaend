@@ -20,9 +20,11 @@ def get(urlsafekey_or_entity):
         entity = urlsafekey_or_entity
         assert entity.key, entity
     else:
-        key = ndb.Key(urlsafe=urlsafekey_or_entity)
-        entity = key.get()
-        if not entity:
+        try:
+            key = ndb.Key(urlsafe=urlsafekey_or_entity)
+            entity = key.get()
+            assert entity
+        except Exception:
             abort(404)
     return gprops.entity_to_props(entity)
 
