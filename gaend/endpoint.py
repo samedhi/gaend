@@ -1,6 +1,16 @@
 from flask import abort
+from gaend.models import GaendWriteMixin, GaendReadMixin
 from google.appengine.ext import ndb
 import props as gprops
+
+
+def is_authorized(klass, write=False):
+    mixin = GaendWriteMixin if write else GaendReadMixin
+    if not issubclass(klass, mixin):
+        abort(500,
+              "gaend.endpoint is not authorized to handle `%s`" \
+              " it does not subclass `%s`"
+              % (klass.__name__, mixin))
 
 
 def get(urlsafekey_or_entity):
@@ -22,6 +32,8 @@ def get(urlsafekey_or_entity):
     else:
         try:
             key = ndb.Key(urlsafe=urlsafekey_or_entity)
+            klass = ndb.Model._lookup_model(key.kind())
+            is_authorized(klass)
             entity = key.get()
             assert entity
         except Exception:
@@ -42,6 +54,7 @@ def post(props):
     `ndb.Key()` object.
     """
     klass = ndb.Model._lookup_model(props['kind'])
+    is_authorized(klass, write=True)
     del props['kind']
     entity = klass(**props)
     entity.put()

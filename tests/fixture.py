@@ -1,6 +1,7 @@
 from gaend.main import APP
 from google.appengine.datastore import datastore_stub_util
 from google.appengine.ext import testbed, ndb
+from gaend.models import GaendFullModel, GaendReadMixin, GaendWriteMixin
 import gaend.generator as generator
 import unittest
 import webtest
@@ -53,7 +54,7 @@ def all_props_combination():
                 p = prop(generator.PetModel, **o)
             else:
                 p = prop(**o)
-            klass = type(klass_name, (ndb.Model,), {prop_name: p})
+            klass = type(klass_name, (GaendFullModel,), {prop_name: p})
             ps.append(klass)
 
     # Very Strange. ndb.ComputedProperty will let you pass
