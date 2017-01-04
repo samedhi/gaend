@@ -67,13 +67,26 @@
                         {{ prop_obj.propClass.__class__.__name__ | replace("Property","") }}
                       </td>
                       <td class="mdl-data-table__cell--non-numeric">
+                        {% if prop_obj.default %}
                         {{ prop_obj.default }}
+                        {% else %}
+                        -
+                        {% endif %}
                       </td>
                       <td class="mdl-data-table__cell--non-numeric">
+                        {% if prop_obj.propClass._required %}
                         {{ prop_obj.propClass._required }}
+                        {% else %}
+                        -
+                        {% endif %}
+
                       </td>
                       <td class="mdl-data-table__cell--non-numeric">
+                        {% if prop_obj.propClass._repeated %}
                         {{ prop_obj.propClass._repeated }}
+                        {% else %}
+                        -
+                        {% endif %}
                       </td>
                       <td class="mdl-data-table__cell--non-numeric">
                         {% if prop_obj.propClass._choices %}

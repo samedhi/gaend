@@ -11,7 +11,7 @@ import logging
 class User(ndb.Model):
     male = ndb.BooleanProperty(default=True)
     born = ndb.DateTimeProperty()
-    time = ndb.TimeProperty()
+    time = ndb.TimeProperty(repeated=True)
     date = ndb.DateProperty(required=True)
     age = ndb.IntegerProperty(default=42)
     height = ndb.FloatProperty(default=23.34)
