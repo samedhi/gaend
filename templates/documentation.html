@@ -31,11 +31,12 @@
           {% endfor %}
         </nav>
       </div>
-      <main class="mdl-layout__content">
+      <main class="mdl-layout__content"
+            style="background-color: #F8F8FF">
         <div class="page-content">
           {% for model_name, model_dict in klasses.iteritems() %}
-          <div class="mdl-card mdl-shadow--2dp"
-               style="width: 100%; margin: 8px;">
+          <div class="mdl-card mdl-shadow--3dp"
+               style="width: 98%; left: 1%; margin: 20px 0; background-color: ">
             <div class="mdl-card__title">
               <h2 class="mdl-card__title-text">
                 <a href="#{{ model_name }}">{{ model_name }}</a></h2>
@@ -47,31 +48,33 @@
               {{ model_name }} has no docstring.
               {% endif %}
             </div>
-            <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp"
-                   style="width: 100%; margin: 12px;">
-              <thead>
-                <th class="mdl-data-table__cell--non-numeric">Name</th>
-                <th class="mdl-data-table__cell--non-numeric">Kind</th>
-                <th class="mdl-data-table__cell--non-numeric">Examples</th>
-              <thead>
-              {% for prop_name, prop_obj in model_dict.properties.iteritems() %}
-              <tbody>
-                <tr>
-                  <td class="mdl-data-table__cell--non-numeric"> {{ prop_name }} </td>
-                  <td class="mdl-data-table__cell--non-numeric">
-                    {{ prop_obj.propClass.__class__.__name__ | replace("Property","") }}
-                  </td>
-                  <td class="mdl-data-table__cell--non-numeric">
-                    {% for e in prop_obj.vals %}
-                    <span class="example">
-                      {{ e }}
-                    </span>
-                    {% endfor %}
-                  </td>
-                </tr>
-              </tbody>
-              {% endfor %}
+            <div style="width: 100%; padding: 12px; position: relative;">
+              <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp"
+                     style="width: 98%">
+                <thead>
+                  <th class="mdl-data-table__cell--non-numeric">Name</th>
+                  <th class="mdl-data-table__cell--non-numeric">Kind</th>
+                  <th class="mdl-data-table__cell--non-numeric">Examples</th>
+                <thead>
+                  {% for prop_name, prop_obj in model_dict.properties.iteritems() %}
+                  <tbody>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric"> {{ prop_name }} </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        {{ prop_obj.propClass.__class__.__name__ | replace("Property","") }}
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        {% for e in prop_obj.vals %}
+                        <span class="example">
+                          {{ e }}
+                        </span>
+                        {% endfor %}
+                      </td>
+                    </tr>
+                  </tbody>
+                  {% endfor %}
               </table>
+            </div>
           </div>
           {% endfor %}
         </div>
