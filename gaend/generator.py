@@ -1,6 +1,7 @@
 from datetime import date, time, datetime
 from google.appengine.ext import testbed, ndb
 import itertools
+import logging
 
 # References
 # cloud.google.com/appengine/docs/python/ndb/db_to_ndb
@@ -99,7 +100,7 @@ CHOICES = {
     bool: [True, False],
     int: [-1, 0, 1],
     float: [-1.0, 0.0, 1.0],
-    basestring: ['1234567890', 'a', 'z'],
+    basestring: ['do', 're', 'mi'],
     datetime: [DATETIME_NOW],
     date: [DATE_NOW],
     time: [TIME_NOW],
