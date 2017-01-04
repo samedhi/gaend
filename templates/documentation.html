@@ -54,6 +54,9 @@
                 <thead>
                   <th class="mdl-data-table__cell--non-numeric">Name</th>
                   <th class="mdl-data-table__cell--non-numeric">Kind</th>
+                  <th class="mdl-data-table__cell--non-numeric">Default</th>
+                  <th class="mdl-data-table__cell--non-numeric">Required</th>
+                  <th class="mdl-data-table__cell--non-numeric">Repeated</th>
                   <th class="mdl-data-table__cell--non-numeric">Examples</th>
                 <thead>
                   {% for prop_name, prop_obj in model_dict.properties.iteritems() %}
@@ -62,6 +65,15 @@
                       <td class="mdl-data-table__cell--non-numeric"> {{ prop_name }} </td>
                       <td class="mdl-data-table__cell--non-numeric">
                         {{ prop_obj.propClass.__class__.__name__ | replace("Property","") }}
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        {{ prop_obj.propClass._default }}
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        {{ prop_obj.propClass._required }}
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        {{ prop_obj.propClass._repeated }}
                       </td>
                       <td class="mdl-data-table__cell--non-numeric">
                         {% for e in prop_obj.vals %}
