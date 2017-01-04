@@ -23,12 +23,11 @@ class GaendReadMixin(Gaend):
 
 
 class GaendFullMixin(Gaend, GaendWriteMixin, GaendReadMixin):
-    """Mixin class indicating this model should have a read endpoint created
+    """Mixin class indicating this model should have all endpoints created
 
     Inheriting from this class means that gaend.routes will automatically
     create all REST HTTP JSON endpoints for this class"""
     pass
-
 
 
 class GaendFullModel(ndb.Model, GaendFullMixin):

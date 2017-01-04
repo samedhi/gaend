@@ -17,32 +17,27 @@ handlers:
 
 ```python
 # main.py
-from flask import Flask
 from google.appengine.ext import ndb
-import gaend
+from gaend.models import GaendFullMixin
 
-app = Flask(__name__)
-
-class Alien(ndb.Model):
+class Alien(ndb.Model, GaendFullMixin):
     proboscis_count = ndb.IntegerProperty(default=1)
     kind = ndb.StringProperty(required=True, choices=["Grey", "Martian", "Hutt"])
     name = ndb.StringProperty(lambda s: len(s) >= 1 and len(s) <= 20)
     full_name = ndb.ComputedProperty(lambda self: self.name + " the " + self.kind)
-
-gaend.create_endpoint(Alien)
 ```
 
 ```bash
 > gcloud deploy app.yaml
 ...
-Deployed service [modeling-agency] to [https://modeling-agency.appspot.com]
+Deployed service [modeling-agency] to [https://aliens-are-real.appspot.com]
 ...
 ```
 
 ```bash
 > curl -H "Content-Type: application/json" \
   -d '{"kind": "Martian", "name": "Bob"}' \
-  https://modeling-agency.appspot.com/alien
+  https://aliens-are-real.appspot.com/alien
 
 {"key": "fsdafsdaf",
  "kind": "Martian",
