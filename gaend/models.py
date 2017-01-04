@@ -1,12 +1,12 @@
 from google.appengine.ext import ndb
 
 
-class GaendModel(ndb.Model):
+class Gaend():
     """The Base class that all `gaend` Models inherit from"""
     pass
 
 
-class GaendWriteMixin():
+class GaendWriteMixin(Gaend):
     """Mixin class indicating this model should have write endpoints created
 
     Inheriting from this class means that gaend.routes will automatically
@@ -14,7 +14,7 @@ class GaendWriteMixin():
     pass
 
 
-class GaendReadMixin():
+class GaendReadMixin(Gaend):
     """Mixin class indicating this model should have a read endpoint created
 
     Inheriting from this class means that gaend.routes will automatically
@@ -22,9 +22,15 @@ class GaendReadMixin():
     pass
 
 
-class GaendFullModel(GaendModel, GaendWriteMixin, GaendReadMixin):
-    """Abstract class indicating this model will have all endpoints created
+class GaendFullMixin(Gaend, GaendWriteMixin, GaendReadMixin):
+    """Mixin class indicating this model should have a read endpoint created
 
-    Inheriting from this class means that the handlers in gaend.routes will
-    automatically create REST HTTP JSON endpoints for this model."""
+    Inheriting from this class means that gaend.routes will automatically
+    create all REST HTTP JSON endpoints for this class"""
+    pass
+
+
+
+class GaendFullModel(ndb.Model, GaendFullMixin):
+    """Abstract class indicating this model will have all endpoints created"""
     pass
