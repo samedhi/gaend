@@ -76,10 +76,11 @@
                         {{ prop_obj.propClass._repeated }}
                       </td>
                       <td class="mdl-data-table__cell--non-numeric">
+                        {% if prop_obj.propClass._choices %}
+                        Must be one of
+                        {% endif %}
                         {% for e in prop_obj.vals %}
-                        <span class="example">
-                          {{ e }}
-                        </span>
+                        <span class="example"> {{ e }} </span>
                         {% endfor %}
                       </td>
                     </tr>
