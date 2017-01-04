@@ -1,14 +1,21 @@
 from collections import OrderedDict
+from datetime import datetime
 from google.appengine.ext import ndb
 from flask import request, Response
-from gaend import generator
+from gaend import generator, js
 from jinja2 import Environment, FileSystemLoader
 from state import APP
+import json
 import logging
 
 class User(ndb.Model):
+    male = ndb.BooleanProperty(default=True)
     born = ndb.DateTimeProperty()
-    name = ndb.StringProperty(choices=['billy', 'bob'])
+    time = ndb.TimeProperty()
+    date = ndb.DateProperty(required=True)
+    age = ndb.IntegerProperty(default=42)
+    height = ndb.FloatProperty(default=23.34)
+    name = ndb.StringProperty(default='bob', choices=['billy', 'bob'])
 
 env = Environment(loader=FileSystemLoader('templates'))
 
@@ -23,8 +30,17 @@ def docs():
             values = generator.VALUES[kind]
             if p._choices:
                 values = p._choices
+            values = list(values)
+            for i, v in enumerate(values):
+                values[i] = js.ndb_to_js(prop_klass, v)
+                values[i] = json.dumps(values[i])
+            default = None
+            if p._default:
+                default = js.ndb_to_js(prop_klass, p._default)
+                default = json.dumps(default)
             pd[k] = {'propClass': p,
-                     'vals': values}
+                     'vals': values,
+                     'default': default}
         klasses[klass.__name__] = {'modelClass': klass,
                                    'properties': pd}
 
