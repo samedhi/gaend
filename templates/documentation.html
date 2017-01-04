@@ -35,21 +35,19 @@
         <div class="page-content">
           {% for model_name, model_dict in klasses.iteritems() %}
           <div class="mdl-card mdl-shadow--2dp"
-               style="width: 512px">
+               style="width: 100%; margin: 8px;">
             <div class="mdl-card__title">
               <h2 class="mdl-card__title-text">{{ model_name }}</h2>
             </div>
             <div class="mdl-card__supporting-text">
-
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Mauris sagittis pellentesque lacus eleifend lacinia...
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Mauris sagittis pellentesque lacus eleifend lacinia...
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Mauris sagittis pellentesque lacus eleifend lacinia...
+              {% if model_dict.modelClass.__doc__ %}
+              {{ model_dict.modelClass.__doc__ }}
+              {% else %}
+              {{ model_name }} has no docstring.
+              {% endif %}
             </div>
             <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp"
-                   style="width: 488px; margin: 12px;">
+                   style="width: 100%; margin: 12px;">
               <thead>
                 <th class="mdl-data-table__cell--non-numeric">Name</th>
                 <th class="mdl-data-table__cell--non-numeric">Kind</th>
