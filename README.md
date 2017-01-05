@@ -55,7 +55,7 @@ Sometimes, the `ndb.Model` class (`Alien` in the example) contains enough inform
 ## Installation
 
 ```bash
-> pip install modeling-agency
+> pip install gaend
 ```
 
 ## API Reference
