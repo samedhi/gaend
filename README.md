@@ -32,9 +32,6 @@ class Alien(ndb.Model, GaendFullMixin):
 ...
 Deployed service [modeling-agency] to [https://aliens-are-real.appspot.com]
 ...
-```
-
-```bash
 > curl -H "Content-Type: application/json" \
   -d '{"kind": "Martian", "name": "Bob"}' \
   https://aliens-are-real.appspot.com/alien
