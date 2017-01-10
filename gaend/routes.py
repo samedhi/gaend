@@ -32,11 +32,6 @@ def jsonify(props):
     return resp
 
 
-@APP.route('/', methods=['GET'])
-def index():
-    return "Index page for this whole site"
-
-
 @APP.route('/<kind>/<urlsafekey>', methods=['GET'])
 @APP.route('/<urlsafekey>', methods=['GET'])
 def get(urlsafekey, kind=None):

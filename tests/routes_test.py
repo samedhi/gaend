@@ -8,9 +8,6 @@ import re
 
 class PropsTest(GeneratorTest):
 
-    def testRoot(self):
-        response = self.testapp.get('/')
-
     def testEndpoints(self):
         for klass in self.klasses:
             kind = klass._get_kind()
