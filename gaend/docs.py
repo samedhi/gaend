@@ -26,6 +26,8 @@ def docs():
         pd = OrderedDict([])
         for k, p in klass._properties.iteritems():
             prop_klass = p.__class__
+            if prop_klass in [ndb.ComputedProperty]:
+                continue
             kind = generator.PROPERTIES[prop_klass]
             values = generator.VALUES[kind]
             if p._choices:
