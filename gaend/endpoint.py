@@ -2,6 +2,7 @@ from flask import abort
 from gaend.models import GaendWriteMixin, GaendReadMixin
 from google.appengine.ext import ndb
 import props as gprops
+import logging
 
 
 def is_authorized(klass, write=False):
@@ -36,7 +37,8 @@ def get(urlsafekey_or_entity):
             is_authorized(klass)
             entity = key.get()
             assert entity
-        except Exception:
+        except Exception as e:
+            logging.error(e)
             abort(404)
     return gprops.entity_to_props(entity)
 
