@@ -21,7 +21,7 @@ class PetModel(ndb.Model):
 
 
 class TestModel(ndb.Model):
-    pass
+    pet = ndb.KeyProperty(kind=PetModel)
 
 
 # Probably wondering why fx instead of just hard coded values? Keys are

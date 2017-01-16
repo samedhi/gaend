@@ -36,9 +36,8 @@ def get(urlsafekey_or_entity):
             klass = ndb.Model._lookup_model(key.kind())
             is_authorized(klass)
             entity = key.get()
-            assert entity
+            assert entity, key
         except Exception as e:
-            logging.error(e)
             abort(404)
     return gprops.entity_to_props(entity)
 

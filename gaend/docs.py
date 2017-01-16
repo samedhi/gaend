@@ -34,6 +34,8 @@ def docs():
                 values = p._choices
             values = list(values)
             for i, v in enumerate(values):
+                if callable(v):
+                    values[i] = v = values[i]()
                 values[i] = js.ndb_to_js(prop_klass, v)
                 values[i] = json.dumps(values[i])
             default = None
