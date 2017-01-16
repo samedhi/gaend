@@ -22,7 +22,7 @@ env = Environment(loader=FileSystemLoader('templates'))
 @APP.route('/docs', methods=['GET'])
 def docs():
     klasses = OrderedDict([])
-    for klass in sorted(ndb.Model._kind_map.values()):
+    for klass in sorted(ndb.Model._kind_map.values(), key=lambda k: k.__name__):
         pd = OrderedDict([])
         for k, p in klass._properties.iteritems():
             prop_klass = p.__class__
