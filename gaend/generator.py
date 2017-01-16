@@ -16,12 +16,12 @@ def compute_fx(self):
 
 # These are the Models used for ndb.Key's as well as
 # ndb.StructuredProperty and ndb.LocalStructuredProperty
-class PetModel(ndb.Model):
-    name = ndb.StringProperty(default="Fido")
+# class PetModel(ndb.Model):
+#     name = ndb.StringProperty(default="Fido")
 
 
-class TestModel(ndb.Model):
-    pet = ndb.KeyProperty(kind=PetModel)
+# class TestModel(ndb.Model):
+#     pet = ndb.KeyProperty(kind=PetModel)
 
 
 # Probably wondering why fx instead of just hard coded values? Keys are

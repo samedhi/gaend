@@ -8,14 +8,14 @@ from state import APP
 import json
 import logging
 
-class User(ndb.Model):
-    male = ndb.BooleanProperty(default=True)
-    born = ndb.DateTimeProperty()
-    time = ndb.TimeProperty(repeated=True)
-    date = ndb.DateProperty(required=True)
-    age = ndb.IntegerProperty(default=42)
-    height = ndb.FloatProperty(default=23.34)
-    name = ndb.StringProperty(default='bob', choices=['billy', 'bob'])
+# class User(ndb.Model):
+#     male = ndb.BooleanProperty(default=True)
+#     born = ndb.DateTimeProperty()
+#     time = ndb.TimeProperty(repeated=True)
+#     date = ndb.DateProperty(required=True)
+#     age = ndb.IntegerProperty(default=42)
+#     height = ndb.FloatProperty(default=23.34)
+#     name = ndb.StringProperty(default='bob', choices=['billy', 'bob'])
 
 env = Environment(loader=FileSystemLoader('templates'))
 
@@ -23,6 +23,8 @@ env = Environment(loader=FileSystemLoader('templates'))
 def docs():
     klasses = OrderedDict([])
     for klass in sorted(ndb.Model._kind_map.values(), key=lambda k: k.__name__):
+        if klass.__name__ == 'GaendFullModel':
+            continue
         pd = OrderedDict([])
         for k, p in klass._properties.iteritems():
             prop_klass = p.__class__
