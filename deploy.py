@@ -2,6 +2,9 @@
 import re
 import subprocess
 
+RM = 'rm -rf dist'
+subprocess.check_output(RM.split(' '))
+
 PORCELAIN = 'git status --porcelain'
 clean = subprocess.check_output(PORCELAIN.split(' '))
 assert clean == "", clean
@@ -20,8 +23,8 @@ with open('setup.py', 'w+') as setup:
 BUILD_WHEEL = 'python setup.py sdist bdist_wheel'
 subprocess.check_output(BUILD_WHEEL.split(' '))
 
-# PIP_PUSH = 'twine upload dist/gaend-*'
-# subprocess.check_output(PIP_PUSH.split(' '))
+PIP_PUSH = 'twine upload dist/gaend-*'
+subprocess.check_output(PIP_PUSH.split(' '))
 
-# COMMIT = 'git add setup.py; git commit -m "pip deploy version %s"' % (s + i_inc)
-# subprocess.check_output(COMMIT.split(' '))
+COMMIT = 'git add setup.py; git commit -m "pip deploy version %s"' % (s + i_inc)
+subprocess.check_output(COMMIT.split(' '))
