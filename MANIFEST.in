@@ -1,2 +1,2 @@
-recursive-include gaend/templates *
+include gaend/templates/documentation.html
 include LICENSE

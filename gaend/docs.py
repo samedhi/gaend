@@ -3,7 +3,7 @@ from datetime import datetime
 from google.appengine.ext import ndb
 from flask import request, Response
 from gaend import generator, js
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 from state import APP
 import json
 import logging
@@ -17,7 +17,7 @@ import logging
 #     height = ndb.FloatProperty(default=23.34)
 #     name = ndb.StringProperty(default='bob', choices=['billy', 'bob'])
 
-env = Environment(loader=FileSystemLoader('templates'))
+env = Environment(loader=PackageLoader('gaend', 'templates'))
 
 @APP.route('/docs', methods=['GET'])
 def docs():
