@@ -26,5 +26,7 @@ subprocess.check_output(BUILD_WHEEL.split(' '))
 PIP_PUSH = 'twine upload dist/gaend-*'
 subprocess.check_output(PIP_PUSH.split(' '))
 
-COMMIT = 'git add setup.py; git commit -m "pip deploy version %s"' % (s + i_inc)
-subprocess.check_output(COMMIT.split(' '))
+ADD = 'git add setup.py'
+subprocess.check_output(ADD.split(' '))
+
+subprocess.check_output(['git', 'commit', '-m', "%s" % (s + str(i_inc))])
