@@ -67,7 +67,7 @@ def post(props):
     # probably have a version number, so we can simply say `hey, don't process`
     # if the version number of the item being processed is greater than my
     # current version number. :TODO:
-    taskqueue.add(url='/gaend/add/%s' % entity.key.urlsafe(),
+    taskqueue.add(url='/gaend/put/%s' % entity.key.urlsafe(),
                   method='GET',
                   queue_name=queue.GAEND_QUEUE,
                   transactional=True)
@@ -94,7 +94,7 @@ def put(props):
 def delete(urlsafekey):
     """Destroy a entity"""
     ndb.Key(urlsafe=urlsafekey).delete()
-    taskqueue.add(url='/gaend/remove/%s' % urlsafekey,
+    taskqueue.add(url='/gaend/delete/%s' % urlsafekey,
                   method='GET',
                   queue_name=queue.GAEND_QUEUE,
                   transactional=True)

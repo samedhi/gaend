@@ -15,18 +15,20 @@ ON_PUT = []
 ON_DELETE = []
 
 
-def call_every_handler(handlers, request):
+def call_every_handler(handlers, request, urlkey):
     for fx in handlers:
-        fx(request)
+        fx(urlkey, request)
 
 
 @APP.route('/gaend/put/<urlkey>', methods=['POST'])
 def puter():
-    ndb.transaction(lambda: call_every_handler(ON_MODIFY, request), xg=True)
+    ndb.transaction(lambda: call_every_handler(ON_MODIFY, urlkey, request),
+                    xg=True)
     return 200
 
 
 @APP.route('/gaend/delete/<urlkey>', methods=['POST'])
 def deleter():
-    ndb.transaction(lambda: call_every_handler(ON_DELETE, request), xg=True)
+    ndb.transaction(lambda: call_every_handler(ON_DELETE, urlkey, request),
+                    xg=True)
     return 200

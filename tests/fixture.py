@@ -75,6 +75,8 @@ class GeneratorTest(unittest.TestCase):
         self.testbed.init_datastore_v3_stub()
         self.testbed.init_memcache_stub()
         self.testbed.init_taskqueue_stub()
+        self.taskqueue_stub = self.testbed.get_stub(
+            testbed.TASKQUEUE_SERVICE_NAME)
         self.policy = datastore_stub_util.PseudoRandomHRConsistencyPolicy(
             probability=1)
         self.testbed.init_datastore_v3_stub(consistency_policy=self.policy)
