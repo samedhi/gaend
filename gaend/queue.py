@@ -1,3 +1,4 @@
+from flask import request
 from google.appengine.ext import ndb
 from state import APP
 
@@ -20,15 +21,15 @@ def call_every_handler(handlers, request, urlkey):
         fx(urlkey, request)
 
 
-@APP.route('/gaend/put/<urlkey>', methods=['POST'])
-def puter():
-    ndb.transaction(lambda: call_every_handler(ON_MODIFY, urlkey, request),
+@APP.route('/gaend/put/<urlkey>', methods=['GET'])
+def puter(urlkey):
+    ndb.transaction(lambda: call_every_handler(ON_PUT, urlkey, request),
                     xg=True)
-    return 200
+    return "OK"
 
 
-@APP.route('/gaend/delete/<urlkey>', methods=['POST'])
-def deleter():
+@APP.route('/gaend/delete/<urlkey>', methods=['GET'])
+def deleter(urlkey):
     ndb.transaction(lambda: call_every_handler(ON_DELETE, urlkey, request),
                     xg=True)
-    return 200
+    return "OK"
