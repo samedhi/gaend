@@ -36,7 +36,8 @@ def delete(urlkey, request):
 
 def elastic():
     return Elasticsearch(hosts=[URL],
-                         verify_certs=False,
+                         send_get_body_as='POST',
+                         verify_certs=True,
                          ca_certs='/etc/ca-certificates.crt')
 
 
@@ -68,5 +69,5 @@ def delete_elastic(urlkey):
         abort(500)
     es = elastic()
     key = ndb.Key(urlsafe=urlkey)
-    res = es.delete(index='gaend', doc_type=key.kind(), id=urlsafe)
+    res = es.delete(index='gaend', doc_type=key.kind(), id=urlkey)
     return "OK"

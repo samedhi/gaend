@@ -4,6 +4,7 @@ from gaend.models import GaendFullModel
 from gaend.queue import ON_PUT, ON_DELETE
 import gaend.elastic as gelastic
 import gaend.js as gjs
+import logging
 import os
 
 class ElasticTest(GeneratorTest):
@@ -29,12 +30,11 @@ class ElasticTest(GeneratorTest):
             gjs.props_to_js({'kind': kind}),
             content_type='application/json')
 
-    def deleter(self):
+    def deleter(self, key):
         kind = GaendFullModel.__name__
-        return self.testapp.delete('/' + kind + '/' + self.key)
+        return self.testapp.delete('/' + kind + '/' + key)
 
     def testElasticPutAndDelete(self):
-        k = ndb.Key(GaendFullModel.__name__, "testing")
         post = self.puter()
 
         # This is the put task firing
@@ -42,18 +42,30 @@ class ElasticTest(GeneratorTest):
         self.assertEqual(task_url, '/gaend/put/%s' % post.json['key'])
         get = self.testapp.get(task_url)
 
-        # print map(lambda x: x.url, self.taskqueue_stub.get_filtered_tasks())
-
         # This is the elastic put task firing
         task_url = self.taskqueue_stub.get_filtered_tasks()[-1].url
         self.assertEqual(task_url, '/gaend/elastic/put/%s' % post.json['key'])
         get = self.testapp.get(task_url)
 
+        es = gelastic.elastic()
+        ret = es.get(index='gaend',
+                     doc_type=GaendFullModel.__name__,
+                     id=post.json['key'])
+        self.assertTrue(ret['found'])
 
+        delete = self.deleter(ret['_id'])
 
-    #     delete = self.deleter()
-    #     tasks = self.taskqueue_stub.get_filtered_tasks()
-    #     # This is the delete task firing
-    #     get = self.testapp.get(tasks[-1].url)
-    #     # This is the elastic delete task firing
-    #     get = self.testapp.get(tasks[-1].url)
+        # This is the delete task firing
+        task_url = self.taskqueue_stub.get_filtered_tasks()[-1].url
+        self.assertEqual(task_url, '/gaend/delete/%s' % post.json['key'])
+        get = self.testapp.get(task_url)
+
+        # This is the elastic delete task firing
+        task_url = self.taskqueue_stub.get_filtered_tasks()[-1].url
+        self.assertEqual(task_url, '/gaend/elastic/delete/%s' % post.json['key'])
+        get = self.testapp.get(task_url)
+
+        ret = es.exists(index='gaend',
+                        doc_type=GaendFullModel.__name__,
+                        id=post.json['key'])
+        self.assertFalse(ret)
