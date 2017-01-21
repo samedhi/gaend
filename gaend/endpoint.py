@@ -1,7 +1,7 @@
 from flask import abort
 from gaend.models import GaendWriteMixin, GaendReadMixin
-from google.appengine.ext import ndb
 from google.appengine.api import taskqueue
+from google.appengine.ext import ndb
 import props as gprops
 import queue
 

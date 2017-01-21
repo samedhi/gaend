@@ -23,13 +23,13 @@ def call_every_handler(handlers, request, urlkey):
 
 @APP.route('/gaend/put/<urlkey>', methods=['GET'])
 def puter(urlkey):
-    ndb.transaction(lambda: call_every_handler(ON_PUT, urlkey, request),
+    ndb.transaction(lambda: call_every_handler(ON_PUT, request, urlkey),
                     xg=True)
     return "OK"
 
 
 @APP.route('/gaend/delete/<urlkey>', methods=['GET'])
 def deleter(urlkey):
-    ndb.transaction(lambda: call_every_handler(ON_DELETE, urlkey, request),
+    ndb.transaction(lambda: call_every_handler(ON_DELETE, request, urlkey),
                     xg=True)
     return "OK"
