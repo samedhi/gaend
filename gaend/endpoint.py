@@ -1,8 +1,9 @@
 from flask import abort
 from gaend.models import GaendWriteMixin, GaendReadMixin
+from google.appengine.api import taskqueue
 from google.appengine.ext import ndb
 import props as gprops
-import logging
+import queue
 
 
 def is_authorized(klass, write=False):
@@ -59,6 +60,17 @@ def post(props):
     del props['kind']
     entity = klass(**props)
     entity.put()
+    # We need a way to guarantee that we are always writting the last enqueued
+    # task. I was thinking of doing this with `name` but I think that would
+    # involve synchronously removing an existent task and adding a task with
+    # the same name... That is complex. In the future, every `GaendModel` should
+    # probably have a version number, so we can simply say `hey, don't process`
+    # if the version number of the item being processed is greater than my
+    # current version number. :TODO:
+    taskqueue.add(url='/gaend/put/%s' % entity.key.urlsafe(),
+                  method='GET',
+                  queue_name=queue.GAEND_QUEUE,
+                  transactional=True)
     return get(entity)
 
 
@@ -82,3 +94,7 @@ def put(props):
 def delete(urlsafekey):
     """Destroy a entity"""
     ndb.Key(urlsafe=urlsafekey).delete()
+    taskqueue.add(url='/gaend/delete/%s' % urlsafekey,
+                  method='GET',
+                  queue_name=queue.GAEND_QUEUE,
+                  transactional=True)
