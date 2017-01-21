@@ -8,7 +8,7 @@ allowing you to quickly write CRUD servers with just a `ndb.Model`."""
 
 setup(
     name='gaend',
-    version='1.0.0.dev12',
+    version='1.0.0.dev13',
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
     url='https://github.com/samedhi/gaend',
