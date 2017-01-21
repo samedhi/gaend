@@ -21,7 +21,8 @@ setup(
                  'Programming Language :: Python :: 2.7'],
     packages=find_packages(exclude=['tests']),
     install_requires=['Flask>=0.11',
-                      'python-dateutil>=2.6'],
+                      'python-dateutil>=2.6',
+                      'elasticsearch>=5.0.0'],
     include_package_data=True,
     zip_safe=False,
 )
