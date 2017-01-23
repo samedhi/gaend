@@ -61,3 +61,7 @@ Sometimes, the `ndb.Model` class (`Alien` in the example) contains enough inform
 ## API Reference
 
 ## Test
+
+`brew install entr`
+
+`find ./gaend ./tests -name "*.py" -print | entr -drc python runner.py $GOOGLE_CLOUD_SDK`
