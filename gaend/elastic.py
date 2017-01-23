@@ -4,6 +4,7 @@ from google.appengine.api import taskqueue
 from google.appengine.ext import ndb
 from gaend.props import entity_to_props
 from state import APP
+import certifi
 import js
 import logging
 
@@ -35,10 +36,11 @@ def delete(urlkey, request):
 
 
 def elastic():
+    certs = certifi.where() or '/etc/ca-certificates.crt'
     return Elasticsearch(hosts=[URL],
                          send_get_body_as='POST',
                          verify_certs=True,
-                         ca_certs='/etc/ca-certificates.crt')
+                         ca_certs=certs)
 
 
 @APP.route('/gaend/elastic/put/<urlkey>', methods=['GET'])
