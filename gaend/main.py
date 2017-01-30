@@ -1,4 +1,5 @@
 from state import APP
+import bigquery
 import docs
-import routes
 import elastic
+import routes
