@@ -32,5 +32,3 @@ def put(json):
         logging.error("table already created")
     else:
         table.create()
-
-put("pug")
