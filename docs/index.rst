@@ -12,6 +12,8 @@ Gaend converts ``google.appengine.ext.ndb.Model``'s into HTTP endpoints. It prov
    :maxdepth: 2
    :caption: Contents:
 
+      gaend <gaend.rst>
+
 
 Full Code Example
 =================
