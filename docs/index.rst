@@ -13,9 +13,11 @@ Gaend converts ``google.appengine.ext.ndb.Model``'s into HTTP endpoints. It prov
    :caption: Contents:
 
 
-Full Code Example::
+Full Code Example
+=================
 
-  # app.yaml
+app.yaml::
+
   runtime: python27
   api_version: 1
   threadsafe: true
@@ -24,7 +26,8 @@ Full Code Example::
   - url: /.*
     script: gaend.main.APP
 
-  # main.py
+main.py::
+
   from google.appengine.ext import ndb
   from gaend.models import GaendFullMixin
 
@@ -37,7 +40,8 @@ Full Code Example::
     full_name = ndb.ComputedProperty(
       lambda self: self.name + " the " + self.kind)
 
-  # bash
+BASH::
+
   > gcloud deploy app.yaml
   ...
   Deployed service [modeling-agency] to [https://aliens-are-real.appspot.com]
@@ -52,7 +56,28 @@ Full Code Example::
    "name": "Bob",
    "full_name": "Bob the Martian"}
 
+Motivation
+==========
 
+Sometimes your data is actually pretty simple.
+
+#. You want to Create, Read, Update, and Destroy entities using REST endpoints.
+#. You want to do validation on every write.
+#. You want up to date documentation of your endpoints.
+
+Sometimes, the ``ndb.Model`` class (``Alien`` in the example) contains enough information to do all of the above bullet points. Why spend time writing boilerplate code that can be inferred? Are we programmers or are we programmers? Infer all the things!
+
+Installation
+============
+
+``> pip install gaend``
+
+Test
+====
+
+``> brew install entr``
+
+``> find ./gaend ./tests -name "*.py" -print | entr -drc python runner.py $GOOGLE_CLOUD_SDK``
 
 ..
    Indices and tables

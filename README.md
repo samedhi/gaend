@@ -58,7 +58,9 @@ Sometimes, the `ndb.Model` class (`Alien` in the example) contains enough inform
 > pip install gaend
 ```
 
-## API Reference
+## Documentation
+
+[Gaend Read the Docs](http://gaend.readthedocs.io/en/latest/)
 
 ## Test
 
