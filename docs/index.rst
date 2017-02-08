@@ -67,6 +67,11 @@ Sometimes your data is actually pretty simple.
 
 Sometimes, the ``ndb.Model`` class (``Alien`` in the example) contains enough information to do all of the above bullet points. Why spend time writing boilerplate code that can be inferred? Are we programmers or are we programmers? Infer all the things!
 
+Documentation & API
+===================
+
+`Gaend Read the Docs <http://gaend.readthedocs.io/en/latest/>`_ contains all documentation for Gaend; including the public API, FAQ's, as well as Cookbook examples.
+
 Installation
 ============
 
