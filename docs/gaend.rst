@@ -1,17 +1,6 @@
 gaend package
 =============
 
-Submodules
-----------
-
-gaend.bigquery module
----------------------
-
-.. automodule:: gaend.bigquery
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 gaend.docs module
 -----------------
 

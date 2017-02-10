@@ -8,11 +8,6 @@ Welcome to Gaend!
 
 Gaend converts ``google.appengine.ext.ndb.Model``'s into HTTP endpoints. It provides validation, routing, documentation, and CRUD server endpoints. Its acts as a DSL for Google App Engine, allowing you to quickly write CRUD servers by only declaring ``ndb.Model``'s.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-
 Full Code Example
 =================
 
@@ -84,10 +79,10 @@ Test
 
 ``> find ./gaend ./tests -name "*.py" -print | entr -drc python runner.py $GOOGLE_CLOUD_SDK``
 
-..
-   Indices and tables
-   ==================
+API
+===
 
-   * :ref:`genindex`
-   * :ref:`modindex`
-   * :ref:`search`
+.. toctree::
+   :maxdepth: 2
+
+   gaend
