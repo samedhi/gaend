@@ -21,6 +21,10 @@ import os
 # import os
 # import sys
 sys.path.insert(0, os.path.abspath('..'))
+path = os.environ['GOOGLE_CLOUD_SDK']
+sys.path.insert(0, os.path.join(path, 'platform/google_appengine'))
+sys.path.insert(0, os.path.join(path, 'platform/google_appengine/lib/yaml/lib'))
+sys.path.insert(0, os.path.abspath('../lib'))
 
 # -- General configuration ------------------------------------------------
 
